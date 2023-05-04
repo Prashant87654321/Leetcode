@@ -1,0 +1,28 @@
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+
+       vector<vector<int>> ans; 
+       sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
+        return a[0] < b[0];
+    });
+     
+     vector<int> prev_int = intervals[0];
+     for(auto v:intervals)
+     {
+        if(prev_int[1] >= v[0])
+        {
+            if(prev_int[1]<v[1])
+            prev_int[1] = v[1];
+        }
+        else
+        {
+          ans.push_back(prev_int);
+          prev_int = v;
+        }
+     }
+     ans.push_back(prev_int);
+      
+     return ans;
+    }
+};
