@@ -1,0 +1,42 @@
+class Solution {
+public:
+    bool isSafe(char c,int count1, int count2, int n)
+    {
+        if(count1 == n && c== '(')
+        return false;
+
+        if(count2 <= 0 && c==')')
+        return false;
+        
+        return true;
+    }
+    void generator(string temp, int n, vector<string>& res, int count1, int count2)
+    {
+        if(temp.length() == 2*n )
+        {
+            res.push_back(temp);
+            return ;
+        }
+
+        if( isSafe('(', count1, count2, n) )
+        {
+        temp.append("(");
+        generator(temp,n, res,count1 + 1, count2+1);
+        temp.pop_back();
+        }
+        
+        if( isSafe(')', count1, count2, n) )
+        {
+          temp.append(")");
+          generator(temp, n, res,count1, count2 -1);
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        string temp;
+         temp.append("(");
+        generator(temp,n, res,1,1);
+
+        return res;
+    }
+};
