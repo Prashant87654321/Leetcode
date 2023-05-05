@@ -1,0 +1,63 @@
+class Solution {
+public:
+    void combineLetter(string temp, vector<string>& res, unordered_map<int, string>& mp, string digits, int l)
+    {
+        if(temp.length() == l)
+        {
+           res.push_back(temp);
+           return ;
+        }
+
+        for(char c:digits)
+        {
+           int num= int(c) - 48;
+           digits.assign(digits.begin()+1, digits.end());
+
+           string curr = mp[num];
+
+           for(auto ch:curr)
+           {
+             temp += ch;
+             combineLetter(temp, res, mp,digits,l);
+             temp.pop_back();
+           }
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        vector<string> res;
+        if(digits.length() == 0)
+        return res;
+        
+        unordered_map<int, string> mp;
+        string temp;
+        
+        for(int i=2; i<=9; i++)
+        {
+            int j=0;
+            if(i==9 || i==7)
+            j=4;
+            else
+            j=3;
+            
+            int start =  ((i-2)*3 + 97);
+            if(i==8 || i==9)
+            start++; 
+
+            while(j >0)
+            {
+                temp += char(start);
+                start++;
+                j--;
+            }
+            mp[i]= temp;
+            temp.clear();
+        }
+        
+        int l = digits.length();
+        
+        combineLetter(temp, res,mp, digits, l);
+
+       // return {mp[2],mp[3],mp[4],mp[5],mp[6],mp[7],mp[8], mp[9]};
+       return res;
+    }
+};
