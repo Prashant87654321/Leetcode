@@ -1,0 +1,30 @@
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int m=matrix.size();
+
+        int rowBegin=0;
+        int rowEnd = m-1;
+        int colBegin =0;
+        int colEnd = m-1;
+
+        while(rowBegin <= rowEnd && colBegin <= colEnd)
+        {
+            int i=0;
+            while(i < colEnd - colBegin)
+            {
+              int temp= matrix[rowBegin][colBegin+i];
+                  swap(matrix[rowBegin+i][colEnd], temp);
+                  swap(temp, matrix[rowEnd][colEnd-i]);
+                  swap(temp, matrix[rowEnd-i][colBegin]);
+                  matrix[rowBegin][colBegin+i]=temp;
+
+                  i++;
+            }
+            rowBegin++;
+            rowEnd--;
+            colBegin++;
+            colEnd--;
+        }
+    }
+};
