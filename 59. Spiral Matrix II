@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n, vector<int>(n, 0));
+
+        int rowBegin=0,colBegin=0;
+        int rowEnd =n-1, colEnd=n-1;
+        int count =1;
+        while(rowBegin <= rowEnd && colBegin <= colEnd)
+        {
+            for(int i=colBegin; i<= colEnd; i++)
+            {
+              res[rowBegin][i]= count++;
+            }
+            rowBegin++;
+            for(int i=rowBegin; i<= rowEnd; i++)
+            {
+                res[i][colEnd]= count++;
+            }
+            colEnd--;
+
+            if(rowBegin <= rowEnd)
+            {
+                for(int i=colEnd; i >= colBegin; i--)
+                {
+                    res[rowEnd][i] = count++;
+                }
+            }
+            rowEnd--;
+
+            if(colBegin <= colEnd)
+            {
+                for(int i=rowEnd; i >= rowBegin; i--)
+                {
+                    res[i][colBegin]= count++;
+                }
+            }
+            colBegin++;
+        }
+
+        return res;
+    }
+};
