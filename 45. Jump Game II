@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        
+        int n=nums.size();
+        int count=0;
+
+        int max_jump=0;
+        int boundary=0;
+        
+        for(int  i=0; i< n-1; i++)
+        {
+            max_jump = max(max_jump, nums[i]+i);
+           if(boundary <= i)
+           {
+               boundary = max_jump;
+                count++;
+                if(boundary >= n-1)
+                return count;
+           }
+           if(max_jump >= n-1)
+           return count+1;
+        }
+        return count;
+    }
+};
