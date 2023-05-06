@@ -1,0 +1,30 @@
+class Solution {
+public:
+    string countAndSay(int n) {
+        vector<string> dp(n);
+        
+        dp[0]="1";
+
+        for(int i=1; i<n; i++)
+        {
+            string temp = dp[i-1];
+            int prev_digit = 0;
+            int count =0;
+            int digit;
+
+            for(char c:temp)
+            {
+                 digit = c - '0';
+                if(count !=0 && prev_digit != digit)
+                {
+                    dp[i] += to_string(count) + to_string(prev_digit);
+                    count =0;
+                }
+                count++;
+                prev_digit = digit;
+            }
+            dp[i] += to_string(count) + to_string(digit);
+        }
+        return dp[n-1];
+    }
+};
