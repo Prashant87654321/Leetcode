@@ -1,0 +1,32 @@
+class Solution {
+public:
+    void combineSum(vector<int>& candidates, int target, vector<vector<int>>& res, vector<int>& temp, int i)
+    {
+        if( target== 0)
+        {
+         res.push_back(temp);
+         return;
+        }
+        else if(target <0)
+        return;
+        
+
+        if(i >= candidates.size())
+        return;
+        
+       temp.push_back(candidates[i]);
+       combineSum(candidates, target-candidates[i], res, temp, i);
+
+       temp.pop_back();
+
+       combineSum(candidates, target, res, temp,i+1);
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> temp;
+
+        combineSum(candidates, target, res, temp, 0);
+
+        return res;
+    }
+};
