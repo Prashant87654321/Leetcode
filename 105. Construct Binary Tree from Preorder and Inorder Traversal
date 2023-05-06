@@ -1,0 +1,41 @@
+class Solution {
+public:
+    TreeNode* binaryTree(vector<int>& preorder, vector<int>& inorder,unordered_map<int, int>& mp,int indexStart,int indexEnd,int& i,int lastIndex)
+    {
+        if(i > lastIndex)
+        return NULL;
+        
+        if(indexStart > indexEnd)
+        return NULL;
+       int currIndex = mp[preorder[i]];
+       TreeNode *root = new TreeNode(inorder[currIndex]);
+       
+       i++;
+
+      if(indexStart == indexEnd)
+       return root;
+
+       root->left = binaryTree(preorder, inorder,mp,indexStart,currIndex-1,i,lastIndex);
+       
+       root->right = binaryTree(preorder, inorder, mp, currIndex+1,indexEnd, i, lastIndex);
+       
+      //  root->right = binaryTree(preorder, inorder, mp, currIndex+1,indexEnd, i, lastIndex);
+
+
+       return root;
+    }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+     int n= inorder.size();
+     int i=0;
+        if(n==1)
+        return new TreeNode(inorder[0]);
+
+      unordered_map<int, int> mp;
+
+      for(int i=0; i<n; i++)
+        mp[inorder[i]]=i;
+    
+        return binaryTree(preorder, inorder, mp,0, n-1, i, n-1);
+
+    }
+};
