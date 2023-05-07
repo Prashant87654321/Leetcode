@@ -1,0 +1,27 @@
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(!head || !head->next || !head->next->next)
+        return head;
+
+        ListNode *first_odd = head,
+                 *second_odd = head->next->next,
+                 *prev_second_odd = head->next;
+
+
+       while(first_odd && prev_second_odd && second_odd )
+       {
+        prev_second_odd->next = second_odd->next;
+        second_odd->next = first_odd->next;
+        first_odd->next = second_odd;
+
+        first_odd = second_odd;
+        if(prev_second_odd)
+        prev_second_odd= prev_second_odd->next;
+        if(prev_second_odd)
+        second_odd = prev_second_odd->next;
+       }
+
+     return head;
+    }
+};
