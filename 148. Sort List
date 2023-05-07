@@ -1,0 +1,91 @@
+class Solution {
+public:
+    ListNode* mergeSortedList(ListNode* l1, ListNode* l2){
+        ListNode *head, *temp;
+
+         head = (l1->val <= l2->val) ? l1 : l2;
+         temp = head;
+
+         if(head == l1)
+         l1 = l1->next;
+         else
+         l2 = l2->next;
+
+         while(l1 && l2)
+         {
+           if(l1->val <= l2->val)
+           {
+               temp->next = l1;
+               temp = temp->next;
+               l1= l1->next;
+           }
+           else
+           {
+               temp->next = l2;
+               temp = temp->next;
+               l2 = l2->next;
+           }
+         }
+
+         if(l1)
+         temp->next = l1;
+         else
+         temp->next = l2; 
+
+         return head;     
+    }
+
+    vector<ListNode*> findMid(ListNode* head)
+    {
+        if(!head || !head->next)
+        return {head,NULL};
+
+       ListNode *fast=head->next, *slow=head;
+
+       while(fast)
+       {
+           fast = fast->next;
+           if(fast )
+           {
+              slow = slow->next;
+              fast= fast->next;
+           }
+       }
+
+       return {slow, slow->next};
+    }
+
+    ListNode* mergeSort(ListNode* head)
+    {
+        
+         vector<ListNode*> mid = findMid(head);
+
+         if(mid[1]==NULL)
+         return head;
+
+         else if(mid[0] == head)
+         {
+           if(mid[0]->val >  mid[1]->val)
+           {
+               mid[0]->next = NULL;
+               head = mid[1];
+               mid[1]->next = mid[0];
+           }
+           return head;
+         }
+         mid[0]->next = NULL;
+         
+         ListNode* l1 = mergeSort(head);
+         ListNode* l2 = mergeSort(mid[1]);
+         ListNode* res = mergeSortedList(l1, l2);
+
+         return res;
+    }
+    ListNode* sortList(ListNode* head) {
+        if(!head || !head->next)
+        return head;
+
+        ListNode* res = mergeSort(head);
+        return res;
+    }
+};
