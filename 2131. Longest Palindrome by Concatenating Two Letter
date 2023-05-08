@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int longestPalindrome(vector<string>& words) {
+        unordered_map<string, int> mp;
+        int count =0;
+        set<string> st;
+        string temp;
+
+        for(auto s: words)
+        {
+            temp.push_back(s[1]);
+            temp.push_back(s[0]);
+            if(s == temp)
+            {
+              if(mp.find(temp) != mp.end())
+              {
+                count+=4;
+                mp.erase(temp);
+                st.erase(temp);
+              }
+              else
+              {
+                st.insert(s);
+                mp[s]++;
+              }
+
+              temp.clear();
+              continue;
+
+            }
+            else if(mp.find(temp) != mp.end())
+            {
+                count+=4;
+                mp[temp]--;
+
+                if(mp[temp]==0)
+                mp.erase(temp);
+                
+
+                temp.clear();
+                continue;
+            }
+            mp[s]++;
+            temp.clear();
+        }
+        if(st.size() >=1)
+        count += 2;
+        
+
+        return count;
+    }
+};
