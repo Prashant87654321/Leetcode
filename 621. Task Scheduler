@@ -1,0 +1,55 @@
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int no_of_tasks = tasks.size();
+
+        if(n ==0)
+        return no_of_tasks;
+        
+        priority_queue<pair<int,char>> pq;
+        queue<pair<int,char>> q;
+
+        sort(tasks.begin(), tasks.end());
+         int count=1;
+        for(int i=1; i<no_of_tasks; i++)
+        {
+            if(tasks[i]==tasks[i-1])
+            count++;
+            else
+            {
+                pq.push({count, tasks[i-1]});
+                count=1;
+            }
+        }
+        pq.push({count, tasks[no_of_tasks-1]});
+
+        count=0;
+         int interval=0;
+        do
+        {
+            if(!pq.empty())
+            {
+             auto p= pq.top();
+              pq.pop();
+              int freq = p.first;
+              char c = p.second;
+              if(freq >1)
+              q.push({freq-1, p.second});
+            }
+            count++;
+            interval++;
+            if(interval > n)
+            {
+                while(!q.empty())
+                {
+                  pq.push(q.front());
+                  q.pop();
+                }
+                interval=0;
+            }
+        }while(!pq.empty() || !q.empty());
+
+        return count;
+   
+    }
+};
