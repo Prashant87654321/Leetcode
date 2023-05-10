@@ -1,0 +1,87 @@
+class Solution {
+public:
+    void serialize(TreeNode* root, string& res)
+    {
+       if(!root)
+        {
+            res += "#";
+            return; 
+        }
+
+        res += "^";
+        res += to_string(root->val);
+        serialize(root->left, res);
+        serialize(root->right, res);
+
+    }
+
+    bool kmp(string substr, string str)
+    {
+        int n= str.size();
+        int m= substr.size();
+
+        if(n <m)
+        return false;
+
+        vector<int> lps(m);
+        int len = 0;
+        int i=1;
+
+        while(i <m)
+        {
+           if(substr[i]==substr[len])
+           {
+               len++;
+               lps[i] = len;
+               i++;
+           }
+           else
+           {
+               if(len == 0)
+               {
+                lps[i]=0;
+                i++;
+               }
+               else
+               len = lps[len-1];
+           }
+
+        }
+
+        int i1=0 , i2=0;
+        while(i1 < n)
+        {
+            if(str[i1] == substr[i2])
+            {
+                i1++;
+                i2++;
+            }
+
+            if(i2==m)
+            {
+              return true;
+            }
+            else if(i1 <n && str[i1] != substr[i2])
+            {
+                if(i2 == 0)
+                i1++;
+
+                else
+                i2 = lps[i2-1];
+            }
+
+        }
+        return false;
+    }
+
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+       string r ="";
+       serialize(root, r);
+
+       string s="";
+       serialize(subRoot, s);
+        
+       
+        return kmp(s,r);
+    }
+};
