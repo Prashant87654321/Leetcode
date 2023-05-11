@@ -1,0 +1,57 @@
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int l = s.size();
+        string  res;
+        int max_count =0;
+        
+        int start = 0;
+        int end =0;
+        int count =0;
+        string temp = "";
+        for(int i=0; i<l; i++)
+        {
+            start = i;
+            end =i;
+            count =0;
+            temp = "";
+           while(start >= 0 && end <l && s[start]==s[end])
+           {
+              if(count==0)
+              temp += s[start];
+              else
+              temp = s[start] + temp + s[end];
+               start--;
+               end++;
+               if(count ==0)
+               count++;
+               else
+               count += 2;
+           }
+           if(count > max_count)
+           {
+               res = temp;
+               max_count = count;
+           }
+            
+           start = i;
+           end = i +1;
+           count =0;
+           temp = "";
+           while(start >= 0 && end <l && s[start]==s[end])
+           {
+              temp = s[start] + temp + s[end];
+               start--;
+               end++;
+               count += 2;
+           }
+           if(count > max_count)
+           {
+               res = temp;
+               max_count = count;
+           }
+
+        }
+        return res;
+    }
+};
