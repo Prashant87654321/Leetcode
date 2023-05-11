@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        int l = s.size();
+
+        unordered_map<string, int> mp;
+        vector<string> res;
+        if(l <= 10)
+        return res;
+
+        int start=0;
+        int end = 0;
+        string temp = "";
+        while(end <l)
+        {
+            temp += s[end];
+            if(end >= 9)
+            {
+              if(mp.find(temp) != mp.end())
+              {
+                  if(mp[temp] != -1)             // reoresent that the current string is already included in result
+                  {
+                   res.push_back(temp);
+                   mp[temp]=-1;
+                  }
+              }
+              else
+              mp[temp]++;
+              
+              temp.erase(temp.begin());
+            }
+            end++;
+        }
+        
+      return res;
+    }
+};
