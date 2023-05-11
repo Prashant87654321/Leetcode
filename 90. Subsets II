@@ -1,0 +1,31 @@
+class Solution {
+public:
+
+void powerSet(vector<int>& nums,int i,vector<int>& temp,vector<vector<int>>& res, map<vector<int>, int>& mp)
+    {
+        if(i == nums.size())
+        {
+          if(mp.find(temp) == mp.end())
+          {
+            res.push_back(temp);
+            mp[temp]++;
+          }
+          return;
+        }
+        temp.push_back(nums[i]);
+        powerSet(nums, i+1, temp, res,mp);
+        temp.pop_back();
+        powerSet(nums, i+1, temp, res,mp);
+    }
+
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+       vector<vector<int>> res;
+       map<vector<int>, int> mp;
+        vector<int> temp;
+
+        powerSet(nums, 0, temp, res,mp);
+
+        return res; 
+    }
+};
