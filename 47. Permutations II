@@ -1,0 +1,32 @@
+class Solution {
+public:
+    void permutations(vector<int>& nums, vector<vector<int>>& res,int l,int r, map<vector<int>, int>& mp)
+    {
+        if(l == r)
+        {
+            if(mp.find(nums) == mp.end() )
+            {
+                res.push_back(nums);
+                mp[nums]++;
+            }
+          return;
+        }
+    
+    
+           for(int i=l; i <= r; i++ )
+           {
+               swap(nums[l],nums[i]);
+               permutations(nums, res, l+1,r, mp);
+               swap(nums[l], nums[i]);
+           }
+       return;
+    }
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>>  res;
+        map<vector<int>, int> mp;
+        
+        permutations(nums, res, 0,nums.size()-1,mp);
+
+        return res;
+    }
+};
