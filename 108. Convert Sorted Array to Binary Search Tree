@@ -1,0 +1,23 @@
+class Solution {
+public:
+
+    TreeNode* constructBST(vector<int>& nums, int l, int r)
+    {
+        if(l <0 || l >= nums.size() || r <0 || r >= nums.size())
+        return nullptr;
+
+        if(l > r)
+        return nullptr;
+        
+        int mid = l + (r-l)/2;
+        TreeNode* root = new TreeNode(nums[mid]);
+        root->left = constructBST(nums,l, mid-1 );
+        root->right = constructBST(nums, mid+1, r);
+
+        return root;
+    }
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        
+        return constructBST(nums, 0, nums.size()-1);
+    }
+};
