@@ -1,0 +1,72 @@
+class Solution {
+public:
+
+    int bfs(vector<vector<int>>& routes, unordered_map<int, vector<int>>& mp, int source, int target,int bus, vector<bool> vis)
+    {
+        
+            queue<int> q;
+
+            for(auto node:routes[bus])
+            {
+             q.push(node);
+            }
+
+            vis[bus]=true;
+
+            int count=0;
+            while(!q.empty())
+            {
+                count++;
+                int size_q = q.size();
+                for(int i=0; i<size_q; i++)
+                {
+                    int v= q.front();
+                    q.pop();
+                    if(v == target)
+                    return count;
+                    
+                    if(v != source)
+                    {
+                    for(auto u:mp[v])
+                    {
+                        if(!vis[u])
+                        {
+                         for(auto x:routes[u])
+                          q.push(x);
+
+                          vis[u] = true;
+                        }
+                    }
+                    }
+                }
+
+            }
+
+            return INT_MAX;
+            
+        
+    }
+    int numBusesToDestination(vector<vector<int>>& routes, int source, int target) {
+        if(source == target)
+        return 0;
+        unordered_map<int, vector<int>> mp;
+        int n= routes.size();
+        vector<bool> vis(n, false);
+        int res = INT_MAX;
+        for(int i=0; i<n ; i++)
+        {
+            for(auto v:routes[i])
+            {
+                mp[v].push_back(i);
+            }
+        }
+       
+        for( auto bus : mp[source])
+        {
+            res = min( res, bfs(routes, mp, source, target, bus, vis));
+        }
+
+        return (res == INT_MAX ? -1 : res);
+            
+    }
+};
