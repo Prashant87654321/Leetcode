@@ -1,0 +1,50 @@
+class Solution {
+public:
+    int partition(vector<int>& unique, unordered_map<int, int>& mp, int l, int r)
+    {
+        int i=l; int j=l;
+        for(j=l; j<= r-1; j++)
+        {
+            if(mp[unique[j]] < mp[unique[r]])
+            {
+                swap(unique[l], unique[j]);
+                l++;
+            }
+        }
+        swap(unique[l], unique[r]);
+        return l;
+    }
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+
+        unordered_map<int, int> mp;
+        vector<int> unique;
+        for(int x:nums)
+           mp[x]++;
+
+         for(auto p : mp)
+         {
+             unique.push_back(p.first);
+         }
+
+         int l = 0;
+         int n = unique.size();
+         int r = n-1;
+
+         while(l <= r)
+         {
+             int p = partition(unique, mp, l,r);
+
+             if(p == n-k)
+             break;
+             else if(p > n-k)
+             r = p-1;
+             else
+             l = p+1;
+         }
+         
+          vector<int> res(unique.begin() + n-k, unique.end());
+
+          return res;
+
+    }
+};
