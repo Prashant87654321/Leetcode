@@ -1,0 +1,81 @@
+class Solution {
+public:
+
+    void bfs(vector<vector<int>>& heights,vector<vector<bool>>& visited,queue<pair<int,int>>& q, int&m, int&n)
+    {
+        int dir[4][2] = {{0,-1},{-1,0},{0,1},{1,0}};
+        while(!q.empty())
+        {
+            int size_q= q.size();
+            for(int i=0; i<size_q; i++)
+            {
+                auto p =q.front();
+                q.pop();
+                int row = p.first;
+                int col = p.second;
+                
+                for(int j=0; j<4; j++)
+                {
+                    int nbr_row = row + dir[j][0];
+                    int nbr_col = col + dir[j][1];
+                    
+                    if(nbr_row >=0 && nbr_row <m && nbr_col >=0 && nbr_col <n )
+                    if(heights[nbr_row][nbr_col] >= heights[row][col] && !visited[nbr_row][nbr_col])
+                    {
+                        q.push({nbr_row, nbr_col});
+                        visited[nbr_row][nbr_col] =true;
+                    }
+                }
+            }
+    
+        }
+
+    }
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        
+        int m = heights.size();
+        int n = heights[0].size();
+        
+        queue<pair<int, int>> qp, qa;
+       vector<vector<int>> res;
+        vector<vector<bool>> Pacific(m, vector<bool>(n,false));
+        vector<vector<bool>> Atlantic(m, vector<bool>(n,false)); 
+
+        for(int i=0; i<m; i++)
+        {
+            Pacific[i][0]=true;
+            qp.push({i,0});
+            Atlantic[i][n-1] = true;
+            qa.push({i,n-1});
+        }
+        Atlantic[m-1][0]=true;
+        qa.push({m-1,0});
+
+        for(int j=1; j < n-1; j++)
+        {
+            Pacific[0][j]=true;
+            qp.push({0,j});
+            Atlantic[m-1][j] = true;
+            qa.push({m-1,j});
+        }
+
+        Pacific[0][n-1]=true;
+        qp.push({0,n-1});
+
+        bfs(heights, Pacific, qp, m, n);
+        bfs(heights, Atlantic, qa, m, n);
+
+        for(int i=0; i<m; i++)
+        {
+            for(int j=0; j<n; j++)
+            {
+                if(Pacific[i][j] && Atlantic[i][j])
+                {
+                    res.push_back({i,j});
+                }
+            }
+        }
+
+        return res;
+    }
+};
