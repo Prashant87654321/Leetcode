@@ -1,0 +1,42 @@
+class Solution {
+public:
+    void combineSum(vector<int>& candidates, int target, vector<vector<int>>& res, vector<int>& temp, int i,int& n)
+    {
+        if( target== 0)
+        {
+             res.push_back(temp);
+            return;
+        }
+        else if(target <0)
+        return;
+        
+        if(i >= n)
+        return;
+        
+        int prev = -1;
+        for(int j=i ; j <n; j++)
+        {
+            if(candidates[j]==prev)
+            continue;
+
+            temp.push_back(candidates[j]);
+            combineSum(candidates, target-candidates[j], res, temp,j+1,n);
+            temp.pop_back();
+
+            prev = candidates[j];
+        }
+    
+    }
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> temp;
+
+        sort(candidates.begin(), candidates.end());
+        int n = candidates.size();
+        
+        combineSum(candidates, target, res, temp, 0,n);
+
+        return res;
+    }
+    
+};
