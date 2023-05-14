@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int countGoodStrings(int low, int high, int zero, int one) {
+        
+        vector<int> dp(high+1, 0);
+        int ans=0;
+        const int num = 1000000007;
+        int start = min(zero, one);
+
+        if(start == zero && start == one)
+        dp[start] = 2;
+        else
+        dp[start] = 1;
+        
+        if(low == start)
+        ans += dp[start];
+        
+
+        for(int i= start+1 ; i<= high; i++)
+        {
+            if(i - zero >=0)
+            {
+              if(i-zero == 0)
+              dp[i] = ((dp[i] % num) + 1) % num;
+              else
+              dp[i] = ( (dp[i] % num) + ( dp[i-zero] % num) ) % num;
+            }
+            if(i - one >=0)
+            {
+                if(i-one == 0)
+                dp[i] = ( (dp[i] % num) + 1 ) % num;
+                else
+                dp[i] = ( (dp[i] % num) + (dp[i-one] % num) ) % num;
+            }
+
+            if(i >= low)
+            {
+                ans = ((ans % num) + (dp[i] % num)) % num; 
+            }
+        }
+
+        return ans;
+    }
+};
