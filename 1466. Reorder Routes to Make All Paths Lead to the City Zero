@@ -1,0 +1,43 @@
+class Solution {
+public:
+    void dfs(vector<vector<int>>& adj, vector<bool>& vis, map<vector<int>, int>& mp , int& res, int v)
+    {
+        if(vis[v])
+        return;
+
+        vis[v] =true;
+        for(auto u : adj[v])
+        {
+            if(!vis[u])
+            {
+             if(mp.find({v,u}) != mp.end())
+             res++;
+
+             dfs(adj, vis, mp, res,u);
+            }
+        }
+        return;
+    }
+    
+
+    int minReorder(int n, vector<vector<int>>& connections) {
+        
+        map<vector<int>, int> mp;
+        vector<vector<int>> adj(n);
+        vector<bool> vis(n, false);
+        int res = 0;
+        
+        for(auto e : connections)
+        {
+            mp[e]++;
+
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+
+        dfs(adj, vis, mp, res, 0);
+
+        return res;
+    }
+
+};
