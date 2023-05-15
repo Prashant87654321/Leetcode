@@ -1,0 +1,75 @@
+class Solution {
+public:
+
+    vector<ListNode*> reverseList(ListNode* head)
+    {
+        if(!head->next)
+        return {head, head};
+
+        ListNode *prev = NULL, *curr=head, *nxt = head->next;
+
+        while(curr)
+        {
+            curr->next = prev;
+            prev = curr;
+            curr = nxt;
+            if(nxt)
+            nxt = nxt->next;
+        }
+
+        return {prev , head};
+
+
+    }
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        
+        if(k == 1)
+        return head;
+
+        ListNode *temp = head, *nxtHead = head->next;
+        int count = 1;
+    
+        vector<ListNode*> prevList, currList;    // using these to store 2 nodes only so still O(1) extra space
+
+        while(temp)
+        {
+           temp = temp->next;
+
+           if(temp)
+           count++;
+
+           if(count == k)
+           {
+               if(temp)
+               nxtHead = temp->next;
+               else
+               nxtHead = NULL;
+
+               if(temp)
+               temp->next = NULL;
+              currList =  reverseList(head);
+
+               if(!prevList.empty())
+               {
+                   prevList[1]->next = currList[0];
+                   prevList = {prevList[0], currList[1]};
+               }
+               else
+               {
+                  prevList = currList;
+               }
+               count = 1;
+
+               temp = nxtHead;
+
+               head = temp;
+           }
+        }
+
+        if(nxtHead)
+        prevList[1]->next = nxtHead;
+
+        return prevList[0];
+        
+    }
+};
