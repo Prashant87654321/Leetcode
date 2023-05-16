@@ -1,0 +1,46 @@
+class Solution {
+public:
+
+   int find(int& x, vector<int>& parent)
+   {
+      if(parent[x] == x)
+      return x;
+
+      return find(parent[x], parent);
+   }
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        
+        int n = edges.size();
+        vector<int> parent(n+1,0);
+        vector<int> rank(n+1, 0);
+        vector<int> res;
+
+        for(int i=1; i<=n; i++)
+         parent[i]=i;
+
+         for(auto e : edges)
+         {
+             int x = find(e[0], parent);
+             int y = find(e[1], parent);
+
+             if( x == y)
+             {
+                 res = e;
+                 break;
+             }
+            
+             if(rank[x] < rank[y])
+             parent[x] =y;
+             else if(rank[x] > rank[y])
+              parent[y] = x;
+             else
+             {
+                 parent[y] = x;
+                 rank[x]++;
+             }
+            
+         }
+
+         return res;
+    }
+};
