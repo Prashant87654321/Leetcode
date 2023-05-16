@@ -1,0 +1,76 @@
+class UnionFind{
+    unordered_map<int, int> parent;
+    unordered_map<int, int> rank;
+
+    public:
+
+     int count;
+
+    UnionFind(int n)
+    {
+       for(int i=0; i<n; i++)
+         parent[i]=i;
+
+       count = n;
+    }
+    
+    int find(int x)
+    {
+        if(parent[x] != x) 
+         parent[x] = find(parent[x]);
+
+        return parent[x];
+    }
+
+    void union_(int x, int y)
+    {
+        int xset = find(x);
+        int yset = find(y);
+
+        if( xset == yset)
+        return;
+
+        count--;
+        if(rank[xset] < rank[yset]) parent[xset] = yset;
+        else if( rank[yset] < rank[xset]) parent[yset] = xset;
+        else
+        {
+            parent[yset] = xset;
+            rank[xset]++;
+        }
+    }
+
+};
+
+class Solution {
+public:
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        UnionFind uf(n);
+
+        for(vector<int> &edge : edges)
+        {
+            uf.union_(edge[0], edge[1]);
+        }
+        
+        if(uf.count == 1)
+        return 0;
+        
+        unordered_map<int, int> subsetSizes;
+        for(int i=0; i<n; i++)
+        {
+            int x = uf.find(i);
+            subsetSizes[x]++;
+        }
+
+        long long res =0;
+        long long prevSize =0;
+
+        for(auto p : subsetSizes)
+        {
+           res += prevSize * p.second;
+           prevSize += p.second;
+        }
+
+     return res;
+    }
+};
