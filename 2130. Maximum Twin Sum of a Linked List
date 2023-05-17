@@ -1,0 +1,39 @@
+class Solution {
+public:
+    ListNode* reverse(ListNode* head)
+    {
+        ListNode *prev = nullptr, *curr= head, *nxt = head->next;
+        while(curr)
+        {
+            curr->next = prev;
+            prev = curr;
+            curr= nxt;
+            if(nxt)
+            nxt = curr->next;
+        }
+
+        return prev;
+    }
+    int pairSum(ListNode* head) {
+        ListNode *slow=head, *fast=head->next;
+
+        while(fast->next)
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode *reverseHead = slow->next;
+        slow->next = nullptr;
+
+        reverseHead = reverse(reverseHead);
+        int maxTwin = 0;
+        while(head)
+        {
+           maxTwin = max(maxTwin, head->val + reverseHead->val);
+           head = head->next;
+           reverseHead = reverseHead->next;
+        }
+
+        return maxTwin;
+    }
+};
