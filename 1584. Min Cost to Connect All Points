@@ -1,0 +1,68 @@
+class Solution {
+public:
+    struct edge{
+      long long cost;
+      pair<int, int> from;
+      pair<int, int> to; 
+    };
+
+    struct compare{
+       bool operator()(edge& a, edge& b){
+          return a.cost > b.cost;
+       }
+    };
+
+    map< pair<int,int>,vector<edge> > mp;
+    priority_queue< edge, vector<edge>, compare> pq;
+    map< pair<int, int>, bool > vis;
+    
+    void addEdges(pair<int, int> node){
+        vis[node]=true;
+        for(auto e : mp[node]){
+            if(!vis[e.to])
+               pq.push(e);
+        }
+    }
+    
+
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n  = points.size(); 
+        if(n == 1)
+        return 0;
+        long long edgeCount = 0, mstCost = 0; 
+        pair<int, int> start = { points[0][0], points[0][1] };
+
+        for(int i=0; i<n; i++){
+            pair<int, int> a = { points[i][0], points[i][1] };
+            for(int j=i+1; j<n; j++){
+               pair<int, int> b = { points[j][0], points[j][1] };
+               int dist = abs( a.first - b.first ) + abs( a.second - b.second );
+               edge e1,e2;
+               e1.from = a;
+               e1.to = b;
+               e1.cost = dist;
+               mp[a].push_back(e1);
+
+               e2.from = b;
+               e2.to = a;
+               e2.cost = dist;
+               mp[b].push_back(e2);
+            }
+        }
+        
+        addEdges(start);
+        while(!pq.empty() && edgeCount != n-1){
+            auto e = pq.top();
+            pq.pop();
+
+            if(vis[e.to]) continue;
+
+            edgeCount++;
+            mstCost += e.cost;
+
+            addEdges(e.to);
+        } 
+
+        return mstCost;
+    }
+};
