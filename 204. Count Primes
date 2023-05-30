@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int countPrimes(int n) {
+       vector<bool> a(n);
+       int count=1;
+       for(int i=2; i*i<n; i++ ){
+            if(!a[i]){
+                for(int j=i*i; j<n; j+=i){
+                  if(!a[j]){
+                   a[j]=true;
+                   count++;
+                  }
+                }
+            }   
+       }
+       return ( n-1-count <=0 ? 0 : n-1-count);
+    }
+};
