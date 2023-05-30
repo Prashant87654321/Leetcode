@@ -1,0 +1,70 @@
+class Node{
+public:
+    int key;
+    int val;
+    Node* prev;
+    Node* next;
+
+    Node(){
+        key = -10;
+        val = -10;
+        prev = nullptr;
+        next = nullptr;
+    }    
+};
+
+class LRUCache {
+public:
+    Node* left = new Node();
+    Node* right = new Node();
+    unordered_map<int,Node*> mp;
+    int n;
+
+    void insertAtRight(Node* v){
+       Node* right_prev = right->prev;
+       right_prev->next = v;
+       v->prev = right_prev;
+       right->prev = v;
+       v->next = right;
+    }
+     
+    void remove(Node* v){
+        Node* prev_node = v->prev;
+        Node* next_node = v->next;
+        prev_node->next = next_node;
+        next_node->prev = prev_node;
+    }
+    
+    LRUCache(int capacity) {
+        n = capacity;
+        left->next = right;
+        right->prev = left;
+    }
+    
+    int get(int key) {
+        if(mp.find(key) == mp.end()) return -1;
+
+        remove(mp[key]);
+        insertAtRight(mp[key]);
+        return mp[key]->val;
+    }
+    
+    void put(int key, int value) {
+        if(mp.find(key) == mp.end()){
+            if(mp.size()==n){
+              mp.erase(left->next->key);
+              remove(left->next);
+            }
+            Node* newNode = new Node();
+            newNode->key = key;
+            newNode->val = value;
+            mp[key]= newNode;
+            insertAtRight(newNode);
+        }
+        else{
+            remove(mp[key]);
+            mp[key]->val = value;
+            insertAtRight(mp[key]);
+        }
+    }
+};
