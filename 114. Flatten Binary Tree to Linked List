@@ -1,0 +1,26 @@
+class Solution {
+public:
+   TreeNode* flat(TreeNode* root){
+      if(!root)
+      return nullptr;
+
+      TreeNode* curr = flat(root->left);
+      flat(root->right);
+
+      if(curr){
+      curr->right = root->right;
+      root->right = root->left;
+      root->left = nullptr;
+      }
+      else
+      curr = root;
+
+      while(curr->right)
+      curr = curr->right;
+
+      return curr;
+   }
+    void flatten(TreeNode* root) {
+       flat(root);
+    }
+};
