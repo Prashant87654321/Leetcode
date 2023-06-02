@@ -1,0 +1,27 @@
+class Solution {
+public:
+    bool dp[16][16];
+    vector<vector<string>> res;
+    vector<string> curr;
+    void dfs(string& s, int i, int& n){
+        if(i>=n){
+            res.push_back(curr);
+            return;
+        }
+
+        for(int j=i; j<n; j++){
+            if(s[i]==s[j] && (j-i<=2 || dp[i+1][j-1])){
+                dp[i][j]=true;
+                curr.push_back(s.substr(i, j-i+1));
+                dfs(s, j+1, n);
+                curr.pop_back();
+            }
+        }
+    }
+    vector<vector<string>> partition(string s) {
+        int n = s.size();
+
+        dfs(s,0,n);
+        return res;
+    }
+};
