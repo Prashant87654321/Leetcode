@@ -1,0 +1,45 @@
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        unordered_map<int, int> mp;
+        string ans="";
+        string integer_part="", decimal_part="";
+    
+        if( ( numerator < 0 && denominator > 0 ) || ( numerator >0 && denominator < 0 )) integer_part += "-";
+        long long tmp_numerator = abs(numerator);
+        denominator = abs(denominator);
+        
+        integer_part += to_string(tmp_numerator / denominator);
+        tmp_numerator %= denominator ;
+
+        if(tmp_numerator == 0) return integer_part;
+        
+        decimal_part += ".";
+        int count_decimal_digit = 1;
+        mp[tmp_numerator] = count_decimal_digit;
+
+        while(tmp_numerator != 0){
+            tmp_numerator*= 10;
+            while(tmp_numerator < denominator){
+                tmp_numerator *= 10;
+                decimal_part += "0";
+                count_decimal_digit++;
+            }
+            decimal_part += to_string(tmp_numerator / denominator);
+            tmp_numerator %= denominator;
+            if(mp[tmp_numerator] != 0){
+              break;
+            }
+            count_decimal_digit++;
+            mp[tmp_numerator]= count_decimal_digit;
+        }
+        if(tmp_numerator == 0){
+            ans += integer_part + decimal_part;
+        }
+        else{
+            ans += integer_part + decimal_part.substr(0,mp[tmp_numerator]) + "(" + 
+                   decimal_part.substr(mp[tmp_numerator]) + ")";
+        }
+        return ans;
+    }
+};
