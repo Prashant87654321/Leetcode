@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<int> digits;
+    int fact(int n){
+        if(n==0) return 1;
+        
+        return n*fact(n-1);
+    }
+    void solve(int n, int k, string& ans){
+       if(n==0)
+       return;
+
+       int index = k/fact(n-1);
+
+       if(k % fact(n-1)==0) index--;
+       ans += to_string(digits[index]);
+
+       digits.erase(digits.begin() + index);
+       k -= index*fact(n-1);
+       solve(n-1, k, ans);
+    }
+    string getPermutation(int n, int k) {
+        for(int i=0; i<n; i++) digits.push_back(i+1);
+        string ans="";
+        solve(n, k, ans);
+
+        return ans;
+    }
+};
