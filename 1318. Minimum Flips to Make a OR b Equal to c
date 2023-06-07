@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int minFlips(int a, int b, int c) {
+        int count=0;
+        for(int i=0; i<32; i++){
+            int ba = (a>>i) & 1;
+            int bb = (b>>i) & 1;
+            int bc = (c>>i) & 1;
+            if(( ba | bb) != bc){
+               if( ((ba | bb)==0) && (bc==1))count++;
+               else{
+                   if(ba==1 && bb==1)count+=2;
+                   else count++;
+               }
+            }
+        }
+        return count;
+    }
+};
