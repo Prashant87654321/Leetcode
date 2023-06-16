@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        vector<int> vec, ans;
+        unordered_map<int, int> mp;
+        int i=0;
+        for(auto &v : intervals){
+            vec.push_back(v[0]);
+            mp[v[0]]=i;
+            i++;
+        }
+        sort(vec.begin(), vec.end());
+       // sort(intervals.begin(), intervals.end());
+        for(auto& v : intervals){
+            auto lower = lower_bound(vec.begin(), vec.end(), v[1]);
+            if(lower == vec.end()) ans.push_back(-1);
+            else ans.push_back(mp[*lower]);
+        }
+        return ans;
+
+    }
+};
