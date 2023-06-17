@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int dfs(vector<vector<int>>& grid, int x, int y, int to_walk){
+        if(x <0 || x >= grid.size() || y<0 || y>=grid[0].size() || grid[x][y]==-1)
+        return 0;
+
+        if(grid[x][y]==2){
+            return to_walk == 0 ? 1 : 0;
+        }
+        grid[x][y]=-1;
+        to_walk--;
+
+        int paths = dfs(grid, x-1, y, to_walk) +
+                    dfs(grid, x+1, y, to_walk) +
+                    dfs(grid, x, y-1, to_walk) +
+                    dfs(grid, x, y+1, to_walk) ; 
+       
+        grid[x][y]=0;
+        to_walk++;
+
+        return paths;
+    }          
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int sx, sy, to_walk =1;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]==0) to_walk++;
+                else if(grid[i][j]==1){
+                    sx = i;
+                    sy = j;
+                }
+            }
+        }
+        return dfs(grid, sx, sy, to_walk);
+    }
+};
