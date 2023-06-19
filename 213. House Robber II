@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+       int n=nums.size();
+       if(n==1)
+       return nums[0];
+       if(n==2)return max(nums[0], nums[1]);
+       
+       int prev2_money=nums[0];
+       int prev_money = max(prev2_money, nums[1]);
+       int curr_money1 =prev_money;
+      
+       for(int i=2; i<n-1; i++) 
+       {
+         curr_money1 = max(prev_money, nums[i]+prev2_money);
+         prev2_money = prev_money;  
+         prev_money = curr_money1;
+       }
+       
+       
+       prev2_money = nums[1];
+       prev_money = max(prev2_money, nums[2]);
+       int curr_money2 = prev_money;
+
+       for(int i= 3; i<n; i++){
+           curr_money2 = max(prev_money, nums[i] + prev2_money);
+           prev2_money = prev_money;
+           prev_money = curr_money2;
+       }
+
+       return max(curr_money1, curr_money2);
+    }
+};
