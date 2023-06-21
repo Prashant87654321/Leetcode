@@ -1,0 +1,54 @@
+class Solution {
+    private:
+    long long ceil_(vector<int>& nums, int& val){
+         int l = 0, r = nums.size()-1;
+         int ans = nums.size();
+         while(l <= r){
+            int mid = l + (r-l)/2;
+            if(nums[mid] <= val)
+            l = mid +1;
+            else{
+                ans = mid;
+                r = mid-1;
+            }
+         }
+         return ans;
+    }
+
+    long long floor_(vector<int>& nums, int& val){
+         int l = 0, r = nums.size()-1;
+         int ans = -1;
+         while(l <= r){
+            int mid = l + (r-l)/2;
+            if(nums[mid] < val){
+            ans = mid;
+            l = mid +1;
+            }
+            else{
+                r = mid-1;
+            }
+         }
+         return ans;
+    }
+    
+public:
+    int minMoves2(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        int med = nums[n/2];
+        if(!(n&1)) med = (med + nums[n/2 - 1])/2;
+        
+        vector<long long> presum(n+1, 0);
+        for(int i=0; i<n; i++){
+            presum[i+1] = nums[i] + presum[i];
+        }
+        
+            int  f = floor_(nums, med);
+            int  c = ceil_(nums, med);
+            int res = abs(med*(n-c) - (presum[n] - presum[c])) +
+                            abs(med*(f+1) - (presum[f+1])) ;
+    
+    
+        return res;
+    }
+};
