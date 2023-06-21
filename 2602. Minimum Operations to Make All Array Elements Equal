@@ -1,0 +1,51 @@
+class Solution {
+public:
+    long long ceil_(vector<int>& nums, int& val){
+         int l = 0, r = nums.size()-1;
+         int ans = nums.size();
+         while(l <= r){
+            int mid = l + (r-l)/2;
+            if(nums[mid] <= val)
+            l = mid +1;
+            else{
+                ans = mid;
+                r = mid-1;
+            }
+         }
+         return ans;
+    }
+
+    long long floor_(vector<int>& nums, int& val){
+         int l = 0, r = nums.size()-1;
+         int ans = -1;
+         while(l <= r){
+            int mid = l + (r-l)/2;
+            if(nums[mid] < val){
+            ans = mid;
+            l = mid +1;
+            }
+            else{
+                r = mid-1;
+            }
+         }
+         return ans;
+    }
+    vector<long long> minOperations(vector<int>& nums, vector<int>& queries) {
+        int n = nums.size();
+        vector<long long> presum(n+1, 0);
+        sort(nums.begin(), nums.end());
+        presum[0]=0;
+        for(int i=0; i<n; i++){
+            presum[i+1] = nums[i] + presum[i];
+        }
+        vector<long long> ans;
+        for(auto x : queries){
+            long long  f = floor_(nums, x);
+            long long c = ceil_(nums, x);
+            long long res = abs(x*(n-c) - (presum[n] - presum[c])) +
+                            abs(x*(f+1) - (presum[f+1])) ;
+           ans.push_back(res);
+        }
+        return ans;
+    }
+};
