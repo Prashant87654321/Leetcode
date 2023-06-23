@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int solve(int i,int curr, vector<int> &nums, int target, vector<vector<int>> &dp, int &tot){
+       if(i==(int)nums.size()){
+           if(curr == target)
+           return 1;
+           else return 0;
+       }
+
+       if(dp[i][curr+tot] != -1) return dp[i][curr+tot];
+
+      dp[i][curr+tot] = solve(i+1, curr+nums[i], nums, target , dp, tot)+
+                        solve(i+1, curr-nums[i], nums, target , dp, tot);
+
+       return dp[i][curr+tot];
+    }
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int tot = accumulate(nums.begin(), nums.end(), 0);
+        vector<vector<int>> dp((int)nums.size(), vector<int>(2*tot + 1, -1));
+        solve(0,0,nums, target, dp, tot);
+        
+       return dp[0][tot];
+    }
+};
