@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int maxConsecutiveAnswers(string answerKey, int k) {
+        unordered_map<char, int> mp;
+        int n = answerKey.size();
+        int mx=0;
+        for(int i=0; i<n; i++){
+            mp[answerKey[i]]++;
+
+            if( min(mp['T'], mp['F']) > k ){
+               mp[answerKey[i-mx]]--;
+            }
+            else
+            mx++;
+        }
+        return mx;
+    }
+};
