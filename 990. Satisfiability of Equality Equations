@@ -1,0 +1,62 @@
+class UnionFind{
+    private:
+    vector<int> parent;
+    vector<int> rank;
+
+    public:
+    UnionFind(int n){
+        parent.resize(n);
+        for(int i=0; i<n; i++){
+            parent[i]= i;
+        }
+        rank.resize(n);
+    }
+
+    int find(int x){
+        int root = x;
+        while(root != parent[root])
+          root = parent[root];
+
+        while(x != root){
+            int next = parent[x];
+            parent[x] = root;
+            x = next;
+        }
+        return root;
+    }
+
+    void union_(int x, int y){
+        int xSet = find(x);
+        int ySet = find(y);
+
+        if(xSet == ySet) return;
+
+        if(rank[xSet] < rank[ySet]){
+             parent[xSet] = ySet;
+        }
+        else{
+            parent[ySet] = xSet;
+            if(rank[xSet] == rank[ySet]) rank[xSet]++;
+        }
+    }
+};
+class Solution {
+public:
+    bool equationsPossible(vector<string>& equations) {
+        UnionFind eq(26);
+        vector<pair<int, int>> nonEquals;
+        for(auto s : equations){
+            if(s[1] == '=') eq.union_( s[0]-'a', s[3]-'a');
+            else{
+                nonEquals.push_back({ s[0]-'a', s[3]-'a' });
+            }
+        }
+
+        for(auto p : nonEquals){
+            if(eq.find(p.first) == eq.find(p.second))
+            return false;
+        }
+
+        return true;
+    }
+};
