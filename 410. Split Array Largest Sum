@@ -1,0 +1,41 @@
+class Solution {
+public:
+    bool check(vector<int>& nums, int m, int k){
+        int parts = 1;
+        int curr_partition_sum  =0;
+        for(int i=0; i<nums.size(); i++){
+            if(nums[i] > m) return false;
+            if(nums[i] + curr_partition_sum <= m){
+                curr_partition_sum += nums[i];
+            }
+            else{
+                parts++;
+                if(parts > k)return false;
+
+                curr_partition_sum = nums[i];
+            }
+        }
+        return true;
+    }
+    int splitArray(vector<int>& nums, int k) {
+       int l = INT_MAX, r=0;
+
+       for(auto num : nums){
+           r += num;
+           if(num < l) l = num;
+       }
+       int ans;
+       while(l <= r){
+           int m = l + (r-l)/2;
+           
+           if(check(nums,m,k )){
+               ans = m;
+               r = m-1;
+           }
+           else{
+               l = m + 1;
+           }
+       }
+       return ans;
+    }
+};
