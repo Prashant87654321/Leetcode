@@ -1,0 +1,48 @@
+class Solution {
+    private:
+    unordered_map<int, vector<int>> graph;
+    void constructGraph(TreeNode* root, TreeNode* parent){
+        if(!root) return ;
+        if(root && parent){
+            graph[root->val].push_back(parent->val);
+            graph[parent->val].push_back(root->val);
+        }
+        constructGraph(root->left, root);
+        constructGraph(root->right, root);
+
+        return;
+    }
+
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        constructGraph(root, nullptr);
+
+        queue<int> q;
+        q.push(target->val);
+        unordered_map<int, bool> vis;
+        vis[target->val] = true;
+        int level = 0;
+        while(level != k){
+            int sz = q.size();
+            for(int i=0; i<sz; i++){
+                int v = q.front();
+                q.pop();
+
+                for(auto u : graph[v]){
+                    if(vis[u]) continue;
+
+                    q.push(u);
+                    vis[u] = true;
+                }
+            }
+            level++;
+        }
+        vector<int> res;
+        while(!q.empty()){
+            res.push_back(q.front());
+            q.pop();
+        }
+
+        return res;
+    }
+};
