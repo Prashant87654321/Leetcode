@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        unordered_set<int> mp;
+        int minArea = INT_MAX;
+        int n = points.size();
+        for(int i=0; i<n; i++){
+            int id = (points[i][0])*50000 + points[i][1];
+            mp.insert(id);
+        }
+
+        for(int i=0; i<n; i++){
+            int x1 = points[i][0], y1 = points[i][1];
+            for(int j=i+1; j<n; j++){
+                int x2 = points[j][0], y2 = points[j][1];
+                if(x1 != x2 && y1 != y2){
+                  int id1 = 50000*x1 + y2;
+                  int id2 = 50000*x2 + y1;
+                  if(mp.find(id1) != mp.end() && mp.find(id2) != mp.end()){
+                    minArea = min( minArea, abs(x1-x2)*abs(y1-y2));
+                  }   
+                }
+            }
+        }
+
+        return (minArea != INT_MAX ? minArea : 0);
+    }
+};
