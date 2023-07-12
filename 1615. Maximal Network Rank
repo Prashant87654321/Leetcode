@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+        set<vector<int>> roadSet;
+        vector<int> deg(n, 0);
+        int count=0;
+        for(auto& v : roads){
+            deg[v[0]]++;
+            deg[v[1]]++;
+            roadSet.insert(v);
+        }
+        int mxDeg = *max_element(deg.begin(), deg.end());
+        vector<int> mxDegNodes;
+        for(int i=0; i<n; i++){
+            if(deg[i] == mxDeg){
+                mxDegNodes.push_back(i);
+            }
+        }
+        if(mxDegNodes.size() < 2){
+            int mxDeg2 = (deg[0] == mxDeg) ? deg[1] : deg[0];
+            for(int i=0; i<n; i++){
+               if(deg[i] == mxDeg) continue;
+
+               mxDeg2 = max(mxDeg2, deg[i]);
+            }
+
+            for(int i=0; i<n; i++){
+                if(deg[i] == mxDeg2){
+                    mxDegNodes.push_back(i);
+                }
+            }
+        }
+        int res = 0;
+        int m = mxDegNodes.size();
+        for(int i=0; i<m; i++){
+            for(int j=i+1; j<m; j++){
+                int n1 = mxDegNodes[i];
+                int n2 = mxDegNodes[j];
+                int curr = deg[n1] + deg[n2];
+                if(roadSet.find({n1, n2}) != roadSet.end() || roadSet.find({n2, n1}) != roadSet.end()){
+                    curr--;
+                }
+                res = max(res, curr);
+            }
+        }
+
+        return res;
+    }
+};
