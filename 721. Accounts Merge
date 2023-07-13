@@ -1,0 +1,39 @@
+class Solution {
+    private:
+    unordered_map<string, vector<string>> graph;
+    unordered_map<string, string> emailToName;
+    unordered_set<string> vis;
+    vector<string> temp;
+public:
+    void dfs(string s){
+       vis.insert(s);
+       temp.push_back(s);
+       for(auto email : graph[s]){
+           if(vis.find(email) != vis.end()) continue;
+          dfs(email);
+       }
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        vector<vector<string>> res;
+        for(auto v : accounts){
+            for(int i=1; i<v.size(); i++){
+                graph[v[1]].push_back(v[i]);
+                graph[v[i]].push_back(v[1]);
+                emailToName[v[i]] = v[0];
+            }
+        }
+        
+        for(auto emailList : graph){
+           if(vis.find(emailList.first) != vis.end()) continue;
+
+            dfs(emailList.first);
+            sort(temp.begin(), temp.end());
+            string name = emailToName[emailList.first];
+            temp.insert(temp.begin(), name);
+            res.push_back(temp);
+            temp.clear();
+        }
+
+        return res;
+    }
+};
