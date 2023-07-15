@@ -1,0 +1,60 @@
+class Solution {
+    private:
+    int start=0, end=0;
+    unordered_map<TreeNode*, TreeNode*> parent;
+    TreeNode* startNode = nullptr;
+    string res="";
+    string temp="";
+    vector<bool> vis;
+public:
+    void solve(TreeNode* node){
+        if(!node) return;
+
+        vis[node->val] = true;
+        if(node->val == end){
+            res = temp;
+            return;
+        }
+        if(node->left && !vis[node->left->val]) {
+          temp += "L";
+          solve(node->left);
+          temp.pop_back();
+        }
+        if(node->right && !vis[node->right->val]){
+             temp += "R";
+              solve(node->right);
+          temp.pop_back();  
+        }
+        if(parent[node] && !vis[parent[node]->val]){
+         temp += "U";
+         solve(parent[node]);
+         temp.pop_back();
+        }
+    }
+    void findStartNode(TreeNode* root){
+        if(root->val == start) {
+            startNode = root;
+        }
+        if(root->left){
+          parent[root->left] = root;
+          findStartNode(root->left);
+        }
+        if(root->right){
+           parent[root->right] = root;
+           findStartNode(root->right);
+        }
+    }
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        start = startValue;
+        end  = destValue;
+        
+        parent[root] = nullptr;
+        findStartNode(root);
+
+        int n = parent.size();
+        vis.resize(n+1, false);
+        solve(startNode);
+
+        return res;
+    }
+};
