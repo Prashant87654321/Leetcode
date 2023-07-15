@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& nums, int k) {
+        vector<int> v(k, 0);
+        v[0] =1;
+        int cur = 0, res=0;
+        for(auto n : nums){
+           cur = (cur + n %k + k) % k;
+           
+           res += v[cur];
+           v[cur]++;
+        }
+        return res;
+    }
+};
