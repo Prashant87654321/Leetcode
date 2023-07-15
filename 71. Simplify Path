@@ -1,0 +1,36 @@
+class Solution {
+public:
+    string simplifyPath(string path) {
+        vector<string> dir;
+        string cur="";
+        for(auto c : path){
+           if(c == '/') {
+               dir.push_back(cur);
+               cur = "";
+               continue;
+           }
+           cur.push_back(c);
+        }
+        dir.push_back(cur);
+
+        stack<string> st;
+        for(auto s : dir){
+            if(s == "." || s== "") continue;
+
+            if(s=="..") {
+                if(!st.empty()) st.pop();
+
+                continue;
+            }
+            st.push(s);
+        }
+
+        string res = "";
+        while(!st.empty()){
+            res = "/" + st.top() + res;
+            st.pop();
+        }
+        if(res =="") res = "/";
+        return res;
+    }
+};
