@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int dp[1<<15][16];
+    int solve(vector<int>& tasks, int mask, int currTime, int& maxT, int& n){
+        if(currTime > maxT) return n+1;
+        if(mask == (1<<n)-1) return 1;
+        if(dp[mask][currTime] != -1) return dp[mask][currTime];
+
+        int ans = n+1;
+        for(int i=0; i<n; i++){
+            if(mask & (1<<i)) continue;
+
+            ans = min(ans, solve(tasks, mask | (1<<i), currTime + tasks[i], maxT, n));
+        
+            ans = min(ans,1 +  solve(tasks, mask | (1<<i), tasks[i], maxT, n));
+        }
+        dp[mask][currTime] = ans;
+        return ans;
+    }
+    int minSessions(vector<int>& tasks, int sessionTime) {
+        memset(dp, -1, sizeof dp);
+        int n = tasks.size();
+       return solve(tasks, 0, 0, sessionTime, n);
+    }
+};
