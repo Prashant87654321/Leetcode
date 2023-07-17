@@ -1,0 +1,28 @@
+class Solution {
+public:
+    void solve(vector<int>& jobs, int k, int pos, vector<int>& workerTime, int& res, int& zero_count){
+        if(jobs.size() - pos < zero_count) return;
+        if(*max_element(workerTime.begin(), workerTime.end()) > res)
+          return;
+        if(pos == jobs.size()){
+            int t = *max_element(workerTime.begin(), workerTime.end());
+            res = min(res, t);
+            return;
+        }
+        for(int i=0; i<k; i++){
+            if(i > 0 && workerTime[i] == workerTime[i-1]) continue;
+            zero_count += (workerTime[i] == 0 ? -1 : 0);
+            workerTime[i] += jobs[pos];
+            solve(jobs, k, pos+1, workerTime, res, zero_count);
+            workerTime[i] -= jobs[pos];
+            zero_count += (workerTime[i] == 0);
+        }
+    }
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        vector<int> workerTime(k, 0);
+        int res = INT_MAX;
+        int zero_count = k;
+        solve(jobs, k, 0, workerTime, res, zero_count);
+        return res;
+    }
+};
