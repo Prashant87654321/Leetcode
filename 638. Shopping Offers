@@ -1,0 +1,28 @@
+class Solution {
+    map<vector<int>, int> needsToCost;
+public:
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+
+        if(needsToCost.find(needs) != needsToCost.end())
+         return needsToCost[needs];
+        int res =0;
+        for(int i=0; i<price.size(); i++){
+            res += price[i]*needs[i];
+        }
+
+        for(auto& offer : special){
+            int j=0;
+            vector<int> t(needs.begin(), needs.end());
+            for(; j < needs.size(); j++){
+               if(needs[j] - offer[j] < 0)
+               break;
+               t[j] -= offer[j];
+            }
+            if(j == needs.size()){
+                res = min(res, offer[j] + shoppingOffers(price, special, t));
+            }
+        }
+        needsToCost[needs] = res;
+        return res;
+    }
+};
