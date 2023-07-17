@@ -1,0 +1,22 @@
+class Solution {
+public:
+    void solve(vector<int>& C, int pos, vector<int>& children, int &res){
+      if(pos == C.size()){
+        int temp = *max_element(children.begin(), children.end());
+        res = min(res, temp);
+        return;
+      }
+      for(int i=0; i<children.size(); i++){
+          children[i] += C[pos];
+          solve(C, pos+1, children,res);
+          children[i] -= C[pos];
+      }
+    }
+    int distributeCookies(vector<int>& cookies, int k) {
+        vector<int> children(k,0);
+        int res = INT_MAX;
+        solve(cookies, 0, children, res);
+
+        return res;
+    }
+};
