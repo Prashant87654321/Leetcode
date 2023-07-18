@@ -1,0 +1,49 @@
+class Solution {
+public:
+    struct node {
+      int row;
+      int col;
+      int cost;
+    };
+
+    struct compare{
+        bool operator()(node& a, node& b){
+           return a.cost > b.cost;
+        }
+    };
+    int swimInWater(vector<vector<int>>& grid) {
+        
+        priority_queue<node, vector<node> , compare> pq;
+        node start;
+        start.row = 0, start.col = 0;
+        start.cost = grid[0][0];
+        pq.push(start);
+        int res = INT_MIN;
+        int n  = grid.size();
+        vector<vector<bool>> vis(n, vector<bool>(n, false));
+        vis[0][0] =true;
+        int dx[4]  ={ 1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};
+        while(!pq.empty()){
+            auto v  = pq.top();
+            pq.pop();
+            res = max(res, v.cost);
+            if(v.row == n-1 && v.col == n-1){
+                break;
+            }
+            
+            for(int i=0; i<4; i++){
+               int nr = v.row + dx[i];
+               int nc = v.col + dy[i];
+
+               if(nr<0 || nc<0 || nr >=n || nc >= n || vis[nr][nc]) continue;
+
+               node newNode;
+               newNode.row = nr, newNode.col = nc;
+               newNode.cost  =grid[nr][nc];
+               pq.push(newNode);
+               vis[nr][nc] = true;
+            }
+        }
+        return res;
+    }
+};
