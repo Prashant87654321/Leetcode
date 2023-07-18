@@ -1,0 +1,21 @@
+class Solution {
+public:
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        vector<int> pick(1000+1, 0);
+        vector<int> drop(1000+1, 0);
+        int mx = INT_MIN;
+        for(auto& v : trips){
+            pick[v[1]]+= v[0];
+            drop[v[2]]+= v[0];
+            mx = max(mx, v[2]);
+        }
+        int curr = 0;
+        for(int i=0; i<=mx; i++){
+           curr += (pick[i] - drop[i]);
+
+           if(curr > capacity)
+           return false;
+        }
+        return true;
+    }
+};
