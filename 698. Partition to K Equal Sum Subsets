@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool solve(vector<int>& nums,int pos, int mask, int currSum, int& target, int k){
+        if(k == 1) return true;
+        if(pos == nums.size()) return false;
+
+        if(currSum == target){
+          return solve(nums,0, mask, 0, target, k-1);
+        }
+        if(!(mask & (1<<pos)) && (currSum + nums[pos] <= target) ){
+          if(solve(nums, pos+1, mask|(1<<pos), currSum+nums[pos], target, k))
+             return true;
+        }
+
+        if(solve(nums, pos+1, mask, currSum, target, k)) 
+          return true;
+
+        return false;
+    }
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        if(sum % k != 0) return false;
+
+        //sort(nums.begin(), nums.end(), greater<int>());
+        int target = sum / k ;
+        
+        return solve(nums,0, 0, 0, target, k);
+    }
+};
