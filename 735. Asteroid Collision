@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        vector<int> res;
+        deque<int> dq;
+        for(auto& asteroid : asteroids){
+            bool flag = false;
+            if( !dq.empty() && (dq.back() >0 && asteroid < 0) ){
+            while( !dq.empty() && (dq.back() >0 && asteroid< 0) ){
+              if(dq.back() == abs(asteroid)){
+                  dq.pop_back();
+                  flag = false;
+                  break;
+              }
+              else if(dq.back() > abs(asteroid)){
+                  flag = false;
+                  break;
+              }
+              else{
+                  dq.pop_back();
+                  flag = true;
+              }
+            }
+            }
+            else{
+                dq.push_back(asteroid);
+            }
+            if(flag){
+                dq.push_back(asteroid);
+            }
+        }
+        while(!dq.empty()){
+            res.push_back(dq.front());
+            dq.pop_front();
+        }
+        return res;
+    }
+};
