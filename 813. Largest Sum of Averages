@@ -1,0 +1,25 @@
+class Solution {
+public:
+    double solve(vector<double>& preSum, int i, int k, int& n, vector<vector<double>>& dp){
+        
+        if(k==1){
+            return (preSum[n]-preSum[i])/(n-i);
+        }
+        if(dp[i][k] != -1) return dp[i][k];
+        for(int j=i+1; j<n; j++){
+            double avg = (preSum[j]-preSum[i])/(j-i) ;
+           dp[i][k] = max(dp[i][k], avg + solve(preSum, j,k-1, n, dp));
+           dp[i][k] = max(dp[i][k], (preSum[n]-preSum[i])/(n-i));
+        }
+        return dp[i][k];
+    }
+    double largestSumOfAverages(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<vector<double>> dp(n, vector<double>(k+1, -1));
+        vector<double> preSum(n+1,0);
+        for(int i=0; i<n; i++){
+            preSum[i+1] = preSum[i] + nums[i];
+        }
+        return solve(preSum, 0, k, n, dp);
+    }
+};
