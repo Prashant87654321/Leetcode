@@ -1,0 +1,39 @@
+class RangeFreqQuery {
+    unordered_map<int, vector<int>> numToPos;
+public:
+    RangeFreqQuery(vector<int>& arr) {
+        for(int i=0; i<arr.size(); i++){
+            numToPos[arr[i]].push_back(i);
+        }
+    }
+    
+    int query(int left, int right, int value) {
+        if(numToPos.find(value) == numToPos.end()) return 0;
+
+        int l = 0, r = numToPos[value].size()-1;
+        if(right < numToPos[value][l] || numToPos[value][r] < left)
+         return 0;
+
+        int leftIdx, rightIdx;
+        while(l <= r){
+            int m = l + (r-l)/2;
+            
+            if(left <= numToPos[value][m] ){
+                 leftIdx = m;
+                 r  = m-1;
+            }
+            else l = m+1;
+        }
+        l=0, r = numToPos[value].size()-1;
+        while(l <= r){
+            int m = l + (r-l)/2;
+        
+            if(numToPos[value][m] <= right) {
+               rightIdx = m;
+               l = m+1;
+            }
+            else r = m-1;
+        }
+        return (rightIdx - leftIdx + 1);
+    }
+};
