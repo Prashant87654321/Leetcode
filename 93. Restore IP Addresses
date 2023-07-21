@@ -1,0 +1,26 @@
+class Solution {
+public:
+    void solve(int i,int dots, string& s,int& n, vector<string>& res, string curr){
+      if(dots == 4 && i == n){
+        curr.pop_back();
+        res.push_back(curr);
+        return;
+      }
+      if(dots > 4) return;
+      
+      for(int j=i; j< min(n,i+3) ; j++){
+          string t = s.substr(i, j-i + 1);
+          if(stoi(t)<= 255 && (i==j || t[0] != '0')){
+              solve(j+1, dots+1, s, n, res, curr + t +".");
+          }
+      }
+      
+    }
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> res;
+        int n = s.size();
+        if(n > 12) return res;
+        solve(0,0,s,n,res,"");
+        return res;
+    }
+};
