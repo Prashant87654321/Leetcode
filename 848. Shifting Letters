@@ -1,0 +1,18 @@
+class Solution {
+public:
+    string shiftingLetters(string s, vector<int>& shifts) {
+        int n= shifts.size();
+        vector<int> shiftAmount(n+1, 0);
+        for(int i=n-1; i>=0; i--){
+            shiftAmount[i] = (shifts[i] + shiftAmount[i+1])%26;
+        
+        int t = s[i] + shiftAmount[i];
+        if(t > 'z'){
+            t = t - 'z' + 'a' -1;
+        }
+        s[i] = char(t);
+        }
+        return s;
+    }
+    
+};
