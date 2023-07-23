@@ -1,0 +1,29 @@
+class Solution {
+public:
+    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n = nums2.size();
+        vector<pair<int, int>> num2_num1;
+        for(int i=0; i<n; i++){
+           num2_num1.push_back({nums2[i], nums1[i]});
+        }
+        sort(num2_num1.begin(), num2_num1.end(), greater<pair<int, int>>());
+        priority_queue<int, vector<int>, greater<int>> pq;
+         int i=0; 
+         long long currSum =0, mx =0;
+        while(i<k){
+            currSum += num2_num1[i].second;
+            pq.push(num2_num1[i].second);
+            i++;
+        }
+         mx = currSum * num2_num1[i-1].first;
+        while(i<n){
+             currSum -= pq.top();
+             pq.pop();
+             currSum += num2_num1[i].second;
+             pq.push(num2_num1[i].second);
+             mx = max(mx, currSum * num2_num1[i].first);
+             i++;
+         }
+         return mx;
+    }
+};
