@@ -1,0 +1,46 @@
+class Solution {
+public:
+    struct {
+      bool operator()(vector<int>& v1, vector<int>& v2){
+          if(v1[0] == v2[0]) return v1[1] > v2[1];
+
+          return v1[0] < v2[0];
+      }
+    } compare;
+    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
+        int n = profits.size();
+        vector<vector<int>> cap_prof;
+        for(int i=0; i<n; i++){
+            cap_prof.push_back({capital[i], profits[i]});
+        } 
+        sort(cap_prof.begin(), cap_prof.end(), compare);
+        priority_queue<int> pq;
+        
+        int i=0;
+        int count = 0;
+        bool f = false;
+        while(i<n){
+            while(i<n && cap_prof[i][0] <= w){
+                pq.push(cap_prof[i][1]);
+                i++;
+            }
+            while(i<n && w < cap_prof[i][0]){
+                if(count == k){
+                    f = true;
+                     break; 
+                     }
+                     if(pq.empty()) return w;
+                w += pq.top();
+                pq.pop();
+                count++;
+            }
+            if(f)break;
+        }
+        while(count != min(n,k)){
+            w += pq.top();
+            pq.pop();
+            count++;
+        }
+        return w;
+    }
+};
