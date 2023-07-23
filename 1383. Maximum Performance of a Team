@@ -1,0 +1,37 @@
+class Solution {
+public:
+    struct {
+         bool operator()(vector<int>& v1, vector<int>& v2){
+             if(v1[0]== v2[0]) return v1[1] > v2[1];
+
+             return v1[0] > v2[0];
+         }
+    }compare;
+    int maxPerformance(int n, vector<int>& speed, vector<int>& efficiency, int k) {
+        int md = 1000000007;
+        vector<vector<int>> eff_speed(n);
+        for(int i=0; i<n; i++){
+            eff_speed[i] = {efficiency[i], speed[i]};
+        }
+        sort(eff_speed.begin(), eff_speed.end(), compare);
+        priority_queue<int, vector<int>, greater<int>> pq;
+        long long currSum =0, mx =0;
+        int i=0;
+        while(i<k){
+            currSum = (currSum + eff_speed[i][1]);
+            pq.push(eff_speed[i][1]);
+            mx = max(mx, (currSum * eff_speed[i][0]));
+            i++;
+        }
+
+        while(i<n){
+            currSum -= pq.top();
+            pq.pop();
+            currSum = (currSum + eff_speed[i][1]);
+            pq.push(eff_speed[i][1]);
+            mx = max(mx, (currSum*eff_speed[i][0]));
+            i++;
+        }
+        return mx%md;
+    }
+};
