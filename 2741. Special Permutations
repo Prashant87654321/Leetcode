@@ -1,0 +1,24 @@
+class Solution {
+    int dp[1<<14][15];
+    int md = 1000000007;
+public:
+    int solve(int mask, vector<int>& nums, int& n, int prev){
+       if(mask == ((1<<n)-1)) return 1;
+
+       if(dp[mask][prev+1] != -1) return dp[mask][prev+1];
+       dp[mask][prev+1] = 0;
+        for(int i=0; i<n; i++){
+            if(!(mask&(1<<i)) && (prev == -1 || (nums[i]%nums[prev]==0) || (nums[prev]%nums[i]==0))){
+               dp[mask][prev+1]= (dp[mask][prev+1] + solve(mask^(1<<i), nums, n, i))%md;
+            }
+        }
+        return dp[mask][prev+1];
+    }
+    int specialPerm(vector<int>& nums) {
+        memset(dp, -1, sizeof(dp));
+        int n = nums.size();
+        vector<int> t;
+        solve(0, nums, n, -1);
+        return dp[0][0];
+    }
+};
