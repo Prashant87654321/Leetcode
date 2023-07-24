@@ -1,0 +1,30 @@
+class Solution {
+public:
+    TreeNode* dfs(string& s, int& i, int d){
+        if(i >= s.size()) return nullptr;
+        int depth =0;
+        int j = i;
+        while(s[j]=='-'){
+            depth++;
+            j++;
+        }
+        if(depth < d) return nullptr;
+        i = j;
+        int val = 0;
+        while(i<s.size() && s[i]-'0'>=0 && s[i] -'0' <= 9){
+            val = 10*val + s[i]-'0';
+            i++;
+        }
+        if(depth == d){
+        TreeNode* root = new TreeNode(val);
+        root->left = dfs(s, i, depth+1);
+        root->right = dfs(s, i, depth+1);
+        return root;
+        }
+        return nullptr;
+    }
+    TreeNode* recoverFromPreorder(string traversal) {
+        int i=0;
+        return dfs(traversal, i, 0);
+    }
+};
