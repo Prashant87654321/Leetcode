@@ -1,0 +1,65 @@
+class Solution {
+    struct TrieNode{
+      TrieNode* child[26];
+      bool isEnd;
+      TrieNode(){
+          for(int i=0; i<26; i++){
+              child[i] = nullptr;
+          }
+          isEnd = false;
+      }
+    };
+    TrieNode* root = new TrieNode();
+    void insert(string& s){
+     TrieNode* cur = root;
+      for(auto &c : s){
+        int idx = c - 'a';
+        if(cur->child[idx] == nullptr) cur->child[idx] = new TrieNode();
+
+        cur = cur->child[idx];
+      }
+      cur->isEnd = true;
+    }
+    bool search(string& s){
+       TrieNode* cur = root;
+      for(auto &c : s){
+        int idx = c - 'a';
+        if(cur->child[idx] == nullptr) return false;
+
+        cur = cur->child[idx];
+      }
+      return cur->isEnd;
+    }
+public:
+   void solve(int i, string& s,string curr, vector<string>& res, vector<string>& t, int& mxLen){
+     if(curr.size() > mxLen) return;
+      if(i == s.size()){
+        if(curr != "") return;
+         string temp = "";
+         for(auto &str : t){
+             temp += str + " ";
+         }
+         temp.pop_back();
+         res.push_back(temp);
+          return;
+      }
+      curr.push_back(s[i]);
+      if(search(curr)){
+        t.push_back(curr);
+        solve(i+1, s, "", res, t, mxLen);
+        t.pop_back();
+      }
+      solve(i+1, s, curr, res, t, mxLen);
+
+   }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        int mxLen= 0;
+        for(auto &word : wordDict){
+            insert(word);
+            mxLen = max(mxLen, (int)word.size());
+        }
+        vector<string> res, t;
+       solve(0, s, "", res, t, mxLen);
+        return res;
+    }
+};
