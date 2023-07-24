@@ -1,0 +1,27 @@
+class Solution {
+public:
+    vector<int> maximumBobPoints(int numArrows, vector<int>& aliceArrows) {
+        vector<int> res(12);
+        int mxPoints =0;
+        for(int i=1; i<(1<<12); i++){
+            vector<int> temp(12);
+            int currArrows = 0;
+            int currPoints = 0;
+            for(int j=0; j<12; j++){
+               if(i&(1<<j)){
+                   currArrows += aliceArrows[j] + 1;
+                   if(currArrows > numArrows) break;
+                   temp[j] = aliceArrows[j] + 1;
+                   currPoints += j;
+               }
+            }
+            if(currArrows > numArrows) continue;
+            if(currPoints > mxPoints){
+               mxPoints = currPoints;
+               temp[0] += numArrows - currArrows;
+               res = temp;
+            }
+        }
+        return res;
+    }
+};
