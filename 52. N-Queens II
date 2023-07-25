@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int col[9], posDiag[18], negDiag[18];
+    void solve(int& n,int r, int& res){
+        if(r == n){
+            res++;
+            return;
+        }
+
+        for(int c=0; c<n; c++){
+            if(col[c] || posDiag[r+c] || negDiag[r-c+n]) {
+               continue;
+            }
+
+            col[c] = true;
+            posDiag[r+c] = true;
+            negDiag[r-c+n] = true;
+            solve(n, r+1, res);
+            col[c] = false;
+            posDiag[r+c] = false;
+            negDiag[r-c+n] = false;
+        }
+    }
+    
+    int totalNQueens(int n) {
+        int res=0;
+        solve(n, 0, res);
+        return res;
+    }
+};
