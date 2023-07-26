@@ -1,0 +1,27 @@
+class Solution {
+public:
+    double check(vector<int>& dist, int& speed){
+        double hourCount =0;
+        int i=0;
+        for(; i < dist.size()-1; i++){
+           hourCount += (int)(dist[i]/speed);
+           if(dist[i]%speed != 0) hourCount += 1;
+        }
+        hourCount += ((double)dist[i]/speed);
+        return hourCount;
+    }
+    int minSpeedOnTime(vector<int>& dist, double hour) {
+        
+        int l = 1, r = 1e7;
+        int ans =-1;
+        while(l <= r){
+         int m = l + (r-l)/2;
+         if(check(dist, m) <= hour){
+             ans = m;
+             r = m-1;
+         }
+         else l = m+1;
+        }
+        return ans;
+    }
+};
