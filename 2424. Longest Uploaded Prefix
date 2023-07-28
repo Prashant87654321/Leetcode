@@ -1,0 +1,78 @@
+class UnionFind {
+    vector<int> parent;
+
+    public:
+     UnionFind(int n) {
+         parent.resize(n+1);
+         for(int i=0; i<=n; i++){
+             parent[i] = i;
+         }
+     }
+
+     int find(int x){
+         int root = x;
+         while(root != parent[root])
+          root = parent[root];
+
+          while(x != root){
+              int t = parent[x];
+              parent[x] = root;
+              x = t;
+          }
+          return root;
+     }
+
+     void union_(int x, int y){
+         int xSet = find(x);
+         int ySet = find(y);
+
+         if(xSet == ySet) return;
+
+         if(xSet < ySet) parent[xSet] = ySet;
+         else parent[ySet] = xSet;
+     }
+};
+class LUPrefix {
+    UnionFind obj;
+    vector<bool> isPresent;
+    int N;
+public:
+    
+    LUPrefix(int n): obj(n), N(n) {
+        isPresent.resize(n+1, false);
+    }
+    
+    void upload(int video) {
+        if(video == 1){
+            if((video + 1 <= N) && isPresent[video + 1])obj.union_(1, 2);
+            obj.union_(0,1);
+            isPresent[1] = true;
+        }
+        else if(video == N){
+            if(N-1 >=0 && isPresent[N-1]) obj.union_(N-1, N);
+
+            isPresent[N] = true;
+        }
+        else{
+            if(isPresent[video-1]){
+                obj.union_(video-1, video);
+            }
+            if(isPresent[video+1]){
+                obj.union_(video, video+1);
+            }
+
+            isPresent[video] = true;
+        }
+    }
+    
+    int longest() {
+        return obj.find(0);
+    }
+};
+
+/**
+ * Your LUPrefix object will be instantiated and called as such:
+ * LUPrefix* obj = new LUPrefix(n);
+ * obj->upload(video);
+ * int param_2 = obj->longest();
+ */
