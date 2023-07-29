@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int dfs(int v,int& n, vector<long long>& res, vector<vector<int>>& adj, vector<int>& parents){
+         
+         int ans =1;
+         int count1 = -1, count2=-1;
+         for(auto u : adj[v]){
+             if(u == parents[v]) continue;
+             
+             if(count1== -1){
+                 
+                 count1 = dfs(u, n, res, adj, parents);
+             }
+             else{
+                 count2 = dfs(u, n, res, adj, parents);
+             }
+         }
+         if(count1==-1) count1 =0;
+         if(count2==-1) count2 =0;
+         res[v] = 1LL* max(1, count1)* max(1, count2)* max(1, n-(count1 + count2 + 1));
+         return count1 + count2 + 1;  
+    }
+    int countHighestScoreNodes(vector<int>& parents) {
+        int n = parents.size();
+        vector<vector<int>> adj(n);
+        vector<long long> res(n,0);
+        for(int i=1; i<n; i++){
+            adj[parents[i]].push_back(i);
+        }
+        dfs(0, n, res, adj, parents);
+        long long mx = *max_element(res.begin(), res.end());
+        int count =0;
+        for(auto x : res){
+            if(x == mx) count++;
+        }
+        return count;
+    }
+};
