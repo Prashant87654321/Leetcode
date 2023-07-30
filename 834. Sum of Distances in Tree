@@ -1,0 +1,39 @@
+class Solution {
+    vector<vector<int>> adj;
+    vector<int> nodesCountInSubtree;
+    vector<int> res;
+public:
+
+    int dfs1(int v, int parent, int depth){
+         nodesCountInSubtree[v] = 1;
+         for(auto u : adj[v]){
+             if(u == parent) continue;
+
+             nodesCountInSubtree[v] += dfs1(u, v, depth+1);
+             res[0] += depth+1;
+         }
+         return nodesCountInSubtree[v];
+    }
+
+    void dfs2(int v, int parent, int& n){
+
+        for(auto u : adj[v]){
+            if(u== parent) continue;
+
+            res[u] = res[v] - nodesCountInSubtree[u] + (n - nodesCountInSubtree[u]);
+            dfs2(u, v, n);
+        }
+    }
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+         adj.resize(n);
+         nodesCountInSubtree.resize(n,0);
+         res.resize(n,0);
+        for(auto edge : edges){
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        dfs1(0, -1, 0);
+        dfs2(0, -1, n);
+        return res;
+    }
+};
