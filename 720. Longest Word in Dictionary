@@ -1,0 +1,71 @@
+class Trie {
+   Trie* child[26];
+   bool isWord;
+   public:
+      Trie(){
+          for(int i=0; i<26; i++){
+              child[i] = nullptr;
+          }
+          isWord = false;
+      }
+
+      void insert(string& s){
+          Trie* t = this;
+          for(auto c : s){
+              int idx = c - 'a';
+              if(t->child[idx] == nullptr)
+                t->child[idx] = new Trie();
+
+              t = t->child[idx];
+          }
+          t->isWord = true;
+      }
+
+      bool search(string& s){
+          Trie* t = this;
+          for(auto c : s){
+              int idx = c - 'a';
+              if(t->child[idx] == nullptr)
+                return false;
+
+              t = t->child[idx];
+          }
+          return t->isWord;
+      }
+};
+class Solution {
+public:
+    string longestWord(vector<string>& words) {
+        Trie* root = new Trie();
+        int mxSize = 0;
+        vector<vector<string>> sizeToString(31);
+        for(auto& word : words){
+         root->insert(word);
+         int sz = word.size();
+         sizeToString[sz].push_back(word);
+         mxSize = max(mxSize, sz);
+        }
+        vector<string> res;
+        bool f1 = false;
+        for(int i=mxSize; i>=1; --i){
+            bool f2 = false;
+            for(auto word : sizeToString[i]){
+                string t = word;
+                t.pop_back();
+                while(root->search(t)){
+                    t.pop_back();
+                }
+                if(t.empty()){
+                    f1 = true;
+                    f2 = true;
+                    res.push_back(word);
+                }
+            }
+            if(f1) break;
+        }
+        if(!f1) return "";
+        sort(res.begin(), res.end());
+        return res[0];
+
+    }
+};
