@@ -1,0 +1,28 @@
+class Solution {
+public:
+    const int INF = 1e9 + 5;
+    vector<vector<int>> dp;
+    vector<vector<pair<int,int>>> adj;
+    int dfs(int v, int& dst, int k){
+       if(v == dst) return 0;
+       if(k == -1) return INF;
+       if(dp[v][k] != -1) return dp[v][k];
+       int ans = INF;
+       for(auto& [u, cost] : adj[v]){
+          ans = min(ans, dfs(u, dst, k-1) + cost);
+       }
+       return dp[v][k] = ans;
+    }
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {      
+        dp.resize(n, vector<int>(k+1, -1));
+        adj.resize(n);
+        for(auto& flight : flights){
+            adj[flight[0]].push_back({flight[1], flight[2]});
+        }
+        int res = dfs(src, dst, k);
+
+        if(res == INF) return -1;
+
+        return res;
+    }
+};
