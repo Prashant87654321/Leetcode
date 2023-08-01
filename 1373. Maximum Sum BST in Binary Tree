@@ -1,0 +1,35 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int garbage = -1;
+    tuple<bool, int, int, int> dfs(TreeNode* node, int& res){
+        if(!node) return { true, 0, INT_MAX , INT_MIN };
+        tuple<bool, int, int , int> l, r;
+        l = dfs(node->left, res);
+        r = dfs(node->right, res);
+
+        bool bstCheck = std::get<3>(l)< node->val  && node->val < std::get<2>(r);
+        if(std::get<0>(l) && std::get<0>(r) && bstCheck){ 
+            int ans = node->val + std::get<1>(l) + std::get<1>(r);
+            res = max(res, ans);
+            return {true, ans, min(std::get<2>(l), node->val), max(std::get<3>(r), node->val)};
+        }
+         return {false, garbage, garbage, garbage};
+    }
+    int maxSumBST(TreeNode* root) {
+        int res = 0;
+        dfs(root, res);
+
+        return res;
+    }
+};
