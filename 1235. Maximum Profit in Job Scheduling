@@ -1,0 +1,27 @@
+class Solution {
+
+    int solve(int i, vector<vector<int>>& data, vector<int>& dp){
+        if(i== data.size()) return 0;
+
+        if(dp[i] != -1) return dp[i];
+
+        vector<int> v = {data[i][1], 0, 0};
+        int nxt_idx = lower_bound(data.begin(), data.end(), v) - data.begin();
+
+        dp[i] = max(data[i][2] + solve(nxt_idx, data, dp),
+                    solve(i+1, data, dp));
+
+        return dp[i];
+    }
+public:
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+        int n = startTime.size();
+        vector<vector<int>> data;
+        for(int i=0; i<n; i++){
+          data.push_back({startTime[i], endTime[i], profit[i]});
+        }
+        sort(data.begin(), data.end());
+        vector<int> dp(n, -1);
+        return solve(0, data, dp);
+    }
+};
