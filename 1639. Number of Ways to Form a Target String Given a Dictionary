@@ -1,0 +1,31 @@
+class Solution {
+   
+public:
+    int numWays(vector<string>& words, string target) {
+       int n = words[0].size();
+       int m = target.size();
+       const int md = 1000000007;
+       vector<vector<long long >> dp(m+1, vector<long long>(n+1, 0));
+       vector<vector<int>> charAtCol(26, vector<int>(n, 0));
+
+       for(auto& word : words){
+           for(int i=0; i<n; i++){
+               charAtCol[word[i]-'a'][i]++;
+           }
+       }
+       dp[0][0] = 1;
+       
+       for(int len=0; len <= m; len++){
+           for(int col=0; col< n; col++){
+               if(len < m)
+               dp[len+1][col+1] = (dp[len+1][col+1] + charAtCol[target[len]-'a'][col] * dp[len][col]) % md;
+
+               dp[len][col+1] = (dp[len][col+1] + dp[len][col]) % md; 
+           }
+       }
+
+       return dp[m][n];
+        
+
+    }
+};
