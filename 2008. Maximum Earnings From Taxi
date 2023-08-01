@@ -1,0 +1,26 @@
+class Solution {
+    vector<int> startIndexes;
+    long long solve(int i, vector<vector<int>>& rides, vector<long long>& dp){
+        if(i == rides.size()) return 0;
+
+        if(dp[i] != -1) return dp[i];
+
+        int nxt_idx = lower_bound(startIndexes.begin(), startIndexes.end(), rides[i][1]) - startIndexes.begin();
+
+        long long ans = max(rides[i][1] - rides[i][0] + rides[i][2] + solve(nxt_idx, rides, dp),
+                       solve(i+1, rides, dp));
+
+        return dp[i] = ans;
+    }
+public:
+    long long maxTaxiEarnings(int n, vector<vector<int>>& rides) {
+        sort(rides.begin(), rides.end());
+        int m = rides.size();
+        for(int i=0; i<m; i++){
+            startIndexes.push_back(rides[i][0]);
+        }
+        vector<long long> dp(m, -1);
+
+        return solve(0, rides, dp);
+    }
+};
