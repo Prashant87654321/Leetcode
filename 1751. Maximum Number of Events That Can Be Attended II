@@ -1,0 +1,22 @@
+class Solution {
+    vector<int> startIndexes;
+    int solve(int i,int k, vector<vector<int>>& events, vector<vector<int>>& dp){
+        if(i == events.size() || k==0) return 0;
+
+        if(dp[i][k] != -1) return dp[i][k];
+        int next_idx = upper_bound(startIndexes.begin(), startIndexes.end(), events[i][1])- startIndexes.begin();
+        int ans = max(events[i][2] + solve(next_idx, k-1, events, dp), solve(i+1, k, events, dp));
+
+        return dp[i][k] = ans;
+    }
+public:
+    int maxValue(vector<vector<int>>& events, int k) {
+        int n = events.size();
+        sort(events.begin(), events.end());
+        for(int i=0; i<n; ++i){
+          startIndexes.push_back(events[i][0]);
+        }
+        vector<vector<int>> dp(n, vector<int>(k+1, -1));
+        return solve(0, k, events, dp);
+    }
+};
