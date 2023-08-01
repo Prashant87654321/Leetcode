@@ -1,0 +1,76 @@
+class Trie {
+   Trie* child[26];
+   bool isWord;
+   public:
+   Trie(){
+       for(int i=0; i<26; i++){
+           child[i] = nullptr;
+       }
+       isWord = false;
+   }
+
+   void insert(string& s){
+      Trie* t = this;
+      for(auto& ch : s){
+          int idx = ch - 'a';
+          if(t->child[idx] == nullptr)
+          t->child[idx] = new Trie();
+
+          t = t->child[idx];
+      }
+      t->isWord = true;
+   }
+
+   bool searchWord(string& s){
+     Trie* t = this;
+      for(auto& ch : s){
+          int idx = ch - 'a';
+          if(t->child[idx] == nullptr)
+            return false;
+
+          t = t->child[idx];
+      }
+      return t->isWord;
+   }
+};
+class WordDictionary {
+    Trie* root;
+public:
+    WordDictionary() {
+        root = new Trie();
+    }
+    
+    void addWord(string word) {
+        root->insert(word);
+    }
+    
+    bool search(string word) {
+        int firstDot = -1, secondDot = -1;
+        for(int i=0; i<word.size(); i++){
+            if(word[i] == '.'){
+                if(firstDot == -1)firstDot = i;
+                else secondDot = i;
+            }
+        }
+        if(firstDot != -1 && secondDot != -1){
+            for(int i=0; i<26; i++){
+                word[firstDot] = char(i + 'a');
+                for(int j=0; j<26; j++){
+                    word[secondDot] = char(j + 'a');
+                    if(root->searchWord(word)) return true;
+                }
+            }
+        }
+        else if(firstDot != -1){
+            for(int i=0; i<26; i++){
+                word[firstDot] = char(i + 'a');
+                if(root->searchWord(word)) return true;
+            }
+        }
+        else {
+            if(root->searchWord(word)) return true;
+        }
+
+        return false;
+    }
+};
