@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int numberOfWeakCharacters(vector<vector<int>>& properties) {
+        unordered_map<int, vector<int>> attackToDefences;
+        vector<int> attacks;
+        for(auto& prop : properties){
+            if(attackToDefences.find(prop[0]) == attackToDefences.end())
+            attacks.push_back(prop[0]);
+            attackToDefences[prop[0]].push_back(prop[1]);
+            
+        }
+        sort(attacks.begin(), attacks.end(), greater());
+
+        int mxDefence = -1;
+        int count = 0;
+        for(auto& attack : attacks){
+            int currMaxDefence = -1;
+            for(auto& defence : attackToDefences[attack]){
+                if(defence < mxDefence) count++;
+
+                currMaxDefence = max(currMaxDefence, defence);
+            }
+            mxDefence = max(mxDefence, currMaxDefence);
+        }
+
+        return count;
+    }
+};
