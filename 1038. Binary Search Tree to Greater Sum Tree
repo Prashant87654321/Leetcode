@@ -1,0 +1,15 @@
+class Solution {
+public:
+    void dfs(TreeNode* root, int& val){
+        if(!root) return ;
+        dfs(root->right, val);
+        root->val += val;
+        val = root->val;
+        dfs(root->left, val);
+    }
+    TreeNode* bstToGst(TreeNode* root) {
+        int val = 0;
+        dfs(root, val);
+        return root;
+    }
+};
