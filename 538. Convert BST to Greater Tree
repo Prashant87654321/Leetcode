@@ -1,0 +1,15 @@
+class Solution {
+    void dfs(TreeNode* node, int& inc){
+        if(!node) return;
+        dfs(node->right, inc);
+        node->val += inc;
+        inc = node->val;
+        dfs(node->left, inc);
+    }
+public:
+    TreeNode* convertBST(TreeNode* root) {
+        int inc = 0;
+        dfs(root, inc);
+        return root;
+    }
+};
