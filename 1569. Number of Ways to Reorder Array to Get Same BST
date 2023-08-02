@@ -1,0 +1,30 @@
+class Solution {
+public:
+    vector<vector<long long>> coeff;
+    const int md = 1e9 + 7;
+    long long dfs(vector<int>& nums){
+        int n = nums.size();
+        if(n < 3) return 1;
+        vector<int> left_nums, right_nums;
+        for(int i=1; i<n; i++){
+            if(nums[i] < nums[0])left_nums.push_back(nums[i]);
+            else right_nums.push_back(nums[i]);
+        }
+        long long left_ways = dfs(left_nums);
+        long long right_ways = dfs(right_nums);
+
+        return ( (left_ways * right_ways)%md * coeff[n-1][right_nums.size()]) % md;
+    }
+    int numOfWays(vector<int>& nums) {
+        int n = nums.size();
+        coeff.resize(n+1);
+        for(int i=0; i<=n; i++){
+           coeff[i] = vector<long long>(i+1, 1);
+           for(int j=1; j<i; j++){
+               coeff[i][j] = (coeff[i-1][j-1] + coeff[i-1][j]) % md;
+           }
+        }
+
+        return (dfs(nums)-1) % md;
+    }
+};
