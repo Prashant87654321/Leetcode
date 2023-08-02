@@ -1,0 +1,58 @@
+class Solution {
+    unordered_map<int, int> cellToDay;
+    vector<vector<bool>> vis;
+    vector<vector<int>> dp;
+public:
+     int dfs(int i, int j, int& row, int& col, int& m){
+         if(i < 0 || i>=row || j<0 || j >= col) return 0;
+         if(vis[i][j]) return 0;
+         vis[i][j] = true;
+         if(dp[i][j] != -1) return dp[i][j];
+         dp[i][j] = 0;
+         if(cellToDay.find(100000*i + j) != cellToDay.end()){
+             if(cellToDay[100000*i + j] <= m) return 0;
+         }
+         if(i==row-1) return 1;
+
+         dp[i][j] = dfs(i-1, j, row, col, m) ||
+                    dfs(i, j-1, row, col, m) ||
+                    dfs(i+1, j, row, col, m) ||
+                    dfs(i, j+1, row, col, m) ;
+        return dp[i][j];
+         
+     }
+     bool check(int& row, int& col, int& m){
+
+         for(int i=0; i<col; i++){
+             if(!vis[0][i])
+             if(dfs(0,i, row, col, m))return true;
+         }
+
+         return false;
+     }
+    int latestDayToCross(int row, int col, vector<vector<int>>& cells) {
+
+        int n = cells.size();
+        vis.resize(row, vector<bool>(col, false));
+        dp.resize(row, vector<int>(col, -1));
+        for(int i=0; i<n; i++){
+            int id = 100000*(cells[i][0]-1) + (cells[i][1]-1);
+            cellToDay[id] = i;
+        }
+        int l = 0, r = n-1, ans = 0;
+        while(l <= r){
+            int m = l + (r-l)/2;
+
+            if(check(row, col, m)){
+                ans = m;
+                l = m+1;
+            }
+            else {
+              r = m-1;
+            }
+           vis.assign(row, vector<bool>(col, false));
+           dp.assign(row, vector<int>(col, -1));
+        }
+        return ans+1;
+    }
+};
