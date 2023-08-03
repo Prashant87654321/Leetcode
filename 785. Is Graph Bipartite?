@@ -1,0 +1,43 @@
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        unordered_set<int> A , B;
+        queue<int> q;
+        int sz = graph.size();
+        vector<bool> vis(sz, false);
+        for(int j=0; j<sz; j++){
+        if(!vis[j]){
+        q.push(j);
+        vis[j] = true;
+        A.insert(0);
+        bool f = false;
+        while(!q.empty()){
+          int n = q.size();
+          for(int i=0; i<n; i++){
+          int v = q.front(); q.pop();
+          for(auto& u : graph[v]){
+              if(!f){
+                  if(A.find(u) != A.end()) return false;
+                  if(B.find(u) == B.end()){
+                      B.insert(u);
+                      q.push(u);
+                      vis[u] = true;
+                  }
+              }
+              else{
+                  if(B.find(u) != B.end()) return false;
+                  if(A.find(u) == A.end()){
+                      A.insert(u);
+                      q.push(u);
+                      vis[u] = true;
+                  }
+              }
+          }
+        }
+        f = !f;
+        }
+        }
+        }
+        return true;
+    }
+};
