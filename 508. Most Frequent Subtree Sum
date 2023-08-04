@@ -1,0 +1,22 @@
+class Solution {
+public:
+    unordered_map<int, int> sumCount;
+    int mx = INT_MIN;
+    int dfs(TreeNode* node){
+        if(!node) return 0;
+        int l = dfs(node->left);
+        int r = dfs(node->right);
+        int currSum = l + r + node->val;
+        sumCount[currSum]++;
+        mx = max(mx, sumCount[currSum]);
+        return currSum;
+    }
+    vector<int> findFrequentTreeSum(TreeNode* root) {
+        vector<int> res;
+        dfs(root);
+        for(auto& [sum, count] : sumCount){
+           if(count == mx) res.push_back(sum);
+        }
+        return res;
+    }
+};
