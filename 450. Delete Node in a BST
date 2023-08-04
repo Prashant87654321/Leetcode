@@ -1,0 +1,70 @@
+class Solution {
+public:
+    TreeNode *toDelete = nullptr, *parent_to_delete = nullptr;
+    char child = '#';
+    void dfs1(TreeNode* node, int& key, TreeNode* parent, char l_or_r){        
+        if(node->val == key){
+            toDelete = node;
+            parent_to_delete = parent;
+            child = l_or_r;
+            return;
+        }
+        if(node->val < key) {
+          if(node->right)
+           dfs1(node->right, key, node, 'r');
+        }
+        else{
+          if(node->left)
+          dfs1(node->left, key, node, 'l');
+        }    
+    }
+    TreeNode *maxInLeftSubTree = nullptr, *parent_maxInLeftSubTree = nullptr;
+    void findMaxInLeftSubTree(TreeNode* node, TreeNode* parent){
+        if(!node->right){
+            maxInLeftSubTree = node;
+            parent_maxInLeftSubTree = parent;
+            return;
+        }
+        findMaxInLeftSubTree(node->right, node);
+    }
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if(!root) return root;
+        dfs1(root, key , nullptr,'#');
+        if(toDelete == nullptr) return root;
+        
+        if(!toDelete->right && !toDelete->left){
+            if(!parent_to_delete) return nullptr;
+            if(child == 'l') parent_to_delete->left = nullptr;
+            else parent_to_delete->right = nullptr;
+            return root;
+        }
+
+        if(!toDelete->left && toDelete->right){
+            if(!parent_to_delete) return toDelete->right;
+            if(child=='l') parent_to_delete->left = toDelete->right;
+            else parent_to_delete->right = toDelete->right;
+
+            return root;
+        }
+
+        if(toDelete->left && !toDelete->right){
+            if(!parent_to_delete) return toDelete->left;
+            if(child=='l') parent_to_delete->left = toDelete->left;
+            else parent_to_delete->right = toDelete->left;
+
+            return root; 
+        }
+        
+        findMaxInLeftSubTree(toDelete->left, toDelete);
+        if(toDelete->val == parent_maxInLeftSubTree->val){
+            toDelete->val = maxInLeftSubTree->val;
+            parent_maxInLeftSubTree->left = maxInLeftSubTree->left;
+        }
+        else{
+            toDelete->val = maxInLeftSubTree->val;
+            parent_maxInLeftSubTree->right = maxInLeftSubTree->left;
+        }
+        return root;
+        
+    }
+};
