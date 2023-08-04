@@ -1,0 +1,38 @@
+class Solution {
+    bool vis[13][1<<13];
+    int bfs(int start, unsigned int mask, vector<vector<int>>& graph, int& n){
+        memset(vis, false, sizeof(vis));
+        queue<pair<int, int>> q;
+        q.push({start, mask});
+        vis[start][mask] = true;
+        int level = 0;
+        while(!q.empty()){
+            int sz = q.size();
+            for(int i=0; i<sz; i++){
+            auto p = q.front(); q.pop();
+            if(p.second == ((1<<n)-1)) return level;
+            for(auto& u : graph[p.first]){
+                int newMask = p.second | (1<<u);
+                if(vis[u][newMask]) continue;
+
+                q.push({u, newMask});
+                vis[u][newMask] = true;
+            }
+            }
+            level++;
+        }
+         return INT_MAX;
+    }
+public:
+    int shortestPathLength(vector<vector<int>>& graph) {
+        int res = INT_MAX;
+        int n = graph.size();
+        unsigned int mask = 0;
+        for(int i=0; i<n; i++){
+            mask = mask ^ (1<<i);
+            res = min(res, bfs(i, mask, graph, n ));
+            mask = 0;
+        }
+        return res;
+    }
+};
