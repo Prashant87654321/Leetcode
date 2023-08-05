@@ -1,0 +1,34 @@
+class Solution {
+public:
+    unordered_set<int> toDelete;
+    unordered_set<TreeNode*> ans;
+    TreeNode* solve(TreeNode* node, TreeNode* parent, char l_or_r){
+        if(!node) return nullptr;
+        TreeNode* l = solve(node->left, node, 'l');
+        TreeNode* r = solve(node->right, node, 'r');
+        if(toDelete.find(node->val) != toDelete.end()){
+            if(l)
+            ans.insert(l);
+            if(r)
+            ans.insert(r);
+            node->left = nullptr;
+            node->right = nullptr;
+            if(l_or_r == 'l' && parent) parent->left = nullptr;
+            else if(parent) parent->right = nullptr;
+
+            return nullptr;
+        }
+        else return node;
+    }
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        for(auto& num : to_delete) toDelete.insert(num);
+        solve(root, nullptr, '#');
+        vector<TreeNode*> res;
+        if(toDelete.find(root->val) == toDelete.end()) res.push_back(root);
+        for(auto& node : ans){
+            res.push_back(node);
+        }
+
+        return res;
+    }
+};
