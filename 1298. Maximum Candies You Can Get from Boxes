@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        unordered_map<int, bool> state;
+        int n = status.size();
+        for(int i=0; i<n; i++){
+            state[i] = status[i];  
+        }
+        vector<bool> vis(n, false), vis_q(n, false);
+        queue<int> q;
+        unordered_set<int> currBoxes, currKey;
+        for(auto& box : initialBoxes){
+            q.push(box);
+            vis_q[box] = true;
+            currBoxes.insert(box);
+        }
+        int res = 0;
+
+        while(!q.empty()){
+            int v = q.front(); q.pop();
+            if(status[v] && !vis[v]){
+                res += candies[v];
+                vis[v] = true;
+            }
+            for(auto& box : containedBoxes[v]){
+                if(!vis_q[box]){
+                q.push(box);
+                vis_q[box] = true;
+                }
+                if(currBoxes.find(box) == currBoxes.end()){
+                    currBoxes.insert(box);
+                }
+            }
+            for(auto& key : keys[v]){
+                currKey.insert(key);
+                if(!vis[key] && currBoxes.find(key) != currBoxes.end()){
+                        res += candies[key];
+                        vis[key] = true;
+                }
+           }
+            
+        }
+        for(auto& box : currBoxes){
+            if(vis[box]) continue;
+            if(status[box] || currKey.find(box) != currKey.end()){
+                res += candies[box];
+                vis[box] = true;
+            }
+        }
+        return res;
+    }
+};
