@@ -1,0 +1,91 @@
+class Trie{
+  Trie* child[26];
+ // bool isWord;
+  int id;
+  public:
+    Trie(){
+        for(int i=0; i<26; i++){
+            this->child[i] = nullptr;
+        }
+       // isWord = false;
+        id = -1;
+    }
+
+    void insert(string& s, int index){
+        Trie* t = this;
+        for(auto& c : s){
+            int idx = c - 'a';
+            if(t->child[idx] == nullptr)
+             t->child[idx] = new Trie();
+
+            t = t->child[idx];
+        }
+       // t->isWord = true;
+        t->id = index;
+    }
+
+    int search(string& s){
+        Trie* t = this;
+        for(auto& c : s){
+            int idx = c - 'a';
+            if(t->child[idx] == nullptr)
+             return -1;
+
+            t = t->child[idx];
+        }
+        return t->id;
+    }
+};
+class Solution {
+public:
+    vector<string> findAllRecipes(vector<string>& recipes, vector<vector<string>>& ingredients, vector<string>& supplies) {
+        vector<string> res;
+        Trie* currSupplies = new Trie();
+        for(auto& supply : supplies) 
+          currSupplies->insert(supply, 0);
+        
+        Trie* currRecipes = new Trie();
+        int i=0;
+        for(auto& recipe : recipes){
+            currRecipes->insert(recipe,i);
+            i++;
+        }
+
+        int n = recipes.size();
+        vector<int> cnt(n, 0);
+        vector<vector<int>> adj(n);
+        for(int i=0; i<n; i++){
+            for(auto& ingredient : ingredients[i]){
+                int idx = currRecipes->search(ingredient);
+                if(idx != -1){
+                  adj[idx].push_back(i);
+                  cnt[i]++;
+                }
+            }
+        }
+        queue<int> q;
+        for(int i=0; i<n; i++){
+            if(cnt[i] == 0)q.push(i);
+        }
+        while(!q.empty()){
+            int v = q.front(); q.pop();
+            bool f = false;
+            for(auto& ingredient : ingredients[v]){
+                if(currSupplies->search(ingredient) == -1){
+                    f = true;
+                    break;
+                }
+            }
+            if(!f){
+                res.push_back(recipes[v]);
+                currSupplies->insert(recipes[v], 0);
+                for(auto& u : adj[v]){
+                    cnt[u]--;
+                    if(cnt[u] == 0)
+                    q.push(u);
+                }
+            }
+        }
+        return res;
+    }
+};
