@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        vector<int> oddPos;
+        int n = nums.size();
+        for(int i=0; i<n; i++){
+            if(nums[i] % 2){
+                oddPos.push_back(i);
+            }
+        }
+        if(oddPos.size() < k) return 0;
+        int m = oddPos.size();
+        int i=0, j = k-1;
+        int res = 0;
+        while(j < m){
+            int l = oddPos[i],  r = oddPos[j];
+            l = l - (i>0 ? oddPos[i-1] : -1);
+            r = (j+1< m ? oddPos[j+1] : n) - r;
+            res += l*r;
+
+            i++; j++;
+        }
+        return res;
+    }
+};
