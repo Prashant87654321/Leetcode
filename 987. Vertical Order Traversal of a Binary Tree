@@ -1,0 +1,23 @@
+class Solution {
+public:
+    map<int, vector<pair<int, int>>> colToNodes;
+    void dfs(TreeNode* node, int row, int col){
+        if(!node) return;
+        
+        colToNodes[col].push_back({row,node->val});
+        dfs(node->left, row+1, col-1);
+        dfs(node->right, row+1, col+1);
+    }
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        dfs(root, 0, 0);
+        vector<vector<int>> res;
+        for(auto [col, vec] : colToNodes){
+            sort(vec.begin(), vec.end());
+            vector<int> t;
+            for(auto& p :  vec) t.push_back(p.second);
+
+            res.push_back(t);
+        }
+        return res;
+    }
+};
