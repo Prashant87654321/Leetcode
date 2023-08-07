@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minimizeXor(int num1, int num2) {
+        int count = 0;
+        while(num2){
+            num2 = num2 & (num2-1);
+            count++;
+        }
+        int x = 0;
+        int i = 31;
+        for(; i>=0; i--){
+            if(i >= count){
+                bool bit = num1 & (1<<i);
+                if(bit) count--;
+                if(count >=0 )
+                x = x | (bit << i);
+            }
+            else{
+                break;
+            }
+        }
+
+        while(i>=0){
+            x = x | (1 << i);
+            i--;
+        }
+        return x;
+    }
+};
