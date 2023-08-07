@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int numberOfUniqueGoodSubsequences(string binary) {
+        const int md = 1e9 + 7;
+        int n = binary.size();
+        int i=0;
+        bool f = false;
+        while(i<n && binary[i] != '1') i++;
+
+        if(i != 0) f = true;
+        vector<long long> dp(n,0);
+        if(i < n)
+        dp[i] = 1;
+        vector<int> prevIdx(2, -1);
+        i++;
+        while(i < n){
+            dp[i] = (2*dp[i-1]) % md;
+            if(binary[i] == '0') f= true;
+
+            if(prevIdx[binary[i]-'0'] != -1){
+                dp[i] = ( dp[i] - dp[prevIdx[binary[i]-'0'] - 1] ) % md;
+            }
+            prevIdx[binary[i]-'0'] = i;
+            i++;
+        }
+         if(f) dp[n-1] += 1;
+         
+         if(dp[n-1] < 0) dp[n-1] += md;
+         return dp[n-1];
+    }
+};
