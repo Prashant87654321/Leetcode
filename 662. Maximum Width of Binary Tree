@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        deque<pair<TreeNode*, long long>> dq;
+        dq.push_back({root, 0});
+        long long mx = 0;
+        while(!dq.empty()){
+            long long left_idx = dq.front().second;
+            mx = max(mx, dq.back().second - left_idx + 1);
+            int sz = dq.size();
+            for(int i=0; i<sz; i++){
+                auto p = dq.front(); dq.pop_front();
+                long long idx = p.second - left_idx;
+                if(p.first->left) dq.push_back({p.first->left, 2*idx + 1});
+
+                if(p.first->right) dq.push_back({p.first->right, 2*idx + 2});
+                }
+            }
+        return mx;
+    }
+};
