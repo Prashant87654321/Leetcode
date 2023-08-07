@@ -1,0 +1,49 @@
+class Trie{
+    Trie* child[26];
+    int prefixCount ;
+    public:
+    Trie(){
+        for(int i=0; i<26; i++){
+            child[i] = nullptr;
+        }
+        prefixCount = 0;
+    }
+
+    void insert(string& s){
+        Trie* t = this;
+        for(auto& c : s){
+            int idx = c - 'a';
+            if(t->child[idx] == nullptr)
+            t->child[idx] = new Trie;
+            
+            t = t->child[idx];
+            t->prefixCount += 1;
+        }
+    }
+    int countPrefix(string& s){
+        Trie* t = this;
+        int res = 0;
+        for(auto& c : s){
+            int idx = c - 'a';
+            if(t->child[idx] == nullptr)
+            break;
+            
+            t = t->child[idx];
+            res += t->prefixCount;
+        }
+        return res;
+    }
+};
+class Solution {
+public:
+    vector<int> sumPrefixScores(vector<string>& words) {
+        vector<int> res;
+        Trie* root = new Trie();
+        for(auto& word : words) root->insert(word);
+
+       for(auto& word : words){
+           res.push_back(root->countPrefix(word));
+       }
+       return res;
+    }
+};
