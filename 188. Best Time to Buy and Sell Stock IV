@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int dp[1001][2][101];
+    int solve(bool buy, int i, vector<int>& prices, int k){
+        if(i == prices.size()) return 0;
+        
+        if(k == 0 && buy) return 0;
+        if(dp[i][buy][k] != -1) return dp[i][buy][k];
+        
+        if(buy ){
+            dp[i][buy][k] = max(solve(0, i+1, prices, k-1) - prices[i],
+                              solve(1, i+1, prices, k));
+        }
+        else{
+            dp[i][buy][k] = max( prices[i] + solve(1, i+1, prices, k),
+                                            solve(0, i+1, prices,  k));
+        }
+
+        return dp[i][buy][k];
+    }
+    int maxProfit(int k, vector<int>& prices) {
+        memset(dp, -1, sizeof(dp));
+        return solve(1, 0, prices, k);
+    }
+};
