@@ -1,0 +1,42 @@
+class Trie{
+    Trie* child[2];
+    int val;
+    public:
+    Trie(): child{nullptr, nullptr}, val(0){}
+
+    void insert(int& n){
+        Trie* t = this;
+        for(int i=31; i>=0; i--){
+            bool bit = n & (1<<i);
+            if(t->child[bit] == nullptr)
+            t->child[bit] = new Trie();
+
+            t = t->child[bit];
+        }
+        t->val = n;
+    }
+
+    int maxXor(int& n){
+        Trie* t = this;
+        for(int i=31; i>=0; i--){
+            bool bit = n & (1<<i);
+            if(t->child[!bit] != nullptr)
+            t = t->child[!bit];
+            else t = t->child[bit];
+        }
+        return (t->val ^ n);
+    }
+
+};
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        int mx = 0;
+        Trie* root = new Trie();
+        for(auto& num : nums){
+            root->insert(num);
+            mx = max(mx, root->maxXor(num)); 
+        }
+        return mx;
+    }
+};
