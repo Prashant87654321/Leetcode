@@ -1,0 +1,70 @@
+class Trie{
+    Trie* child[2];
+    int val;
+    public:
+    Trie(): child{nullptr, nullptr}, val(0){}
+
+    void insert(int& n){
+        Trie* t = this;
+        for(int i=31; i>=0; i--){
+            bool bit = n & (1<<i);
+            if(t->child[bit] == nullptr)
+            t->child[bit] = new Trie();
+
+            t = t->child[bit];
+        }
+        t->val = n;
+    }
+
+    int maxXor(int& n){
+        Trie* t = this;
+        for(int i=31; i>=0; i--){
+            bool bit = n & (1<<i);
+            if(t->child[!bit] != nullptr)
+            t = t->child[!bit];
+            else t = t->child[bit];
+        }
+        return (t->val ^ n);
+    }
+};
+
+bool comp(vector<int>& v1, vector<int>& v2){
+    return v1[1] < v2[1];
+} 
+class Solution {
+public:
+    vector<int> maximizeXor(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<vector<int>> queries_t;
+        vector<vector<int>> res_t;
+        vector<int> res;
+        int i=0;
+        for(auto query : queries){
+           query.push_back(i);
+           queries_t.push_back(query);
+           i++;
+        }
+        sort(queries_t.begin(), queries_t.end(), comp);
+        sort(nums.begin(), nums.end());
+        Trie* root = new Trie();
+        int j=0, n = nums.size();
+        for(auto& query : queries_t){
+            while(j < n && nums[j] <= query[1]){
+                root->insert(nums[j]);
+                j++;
+            }
+            if(j==0){
+                res_t.push_back({-1, query[2]});
+            }
+            else{
+                int currRes = root->maxXor(query[0]);
+                res_t.push_back({currRes, query[2]});
+            }
+        }
+        sort(res_t.begin(), res_t.end(), comp);
+        for(auto& vec : res_t){
+            res.push_back(vec[0]);
+        }
+
+        return res;
+    }
+};
