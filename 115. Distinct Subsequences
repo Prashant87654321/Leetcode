@@ -1,0 +1,50 @@
+class Solution {
+public:
+    vector<vector<int>> lowerCharToIndex, upperCharToIndex;
+    vector<vector<int>> dp;
+    int solve(int idx_t, int idx_s, string& t, string& s){
+        if(idx_t == t.size()){
+            return 1;
+        }
+        if(idx_s >= s.size()) return 0;
+
+        if(dp[idx_t][idx_s] != -1) return dp[idx_t][idx_s];
+        dp[idx_t][idx_s] = 0;
+        if(t[idx_t] >= 'a'){
+            auto currIdx = lower_bound(lowerCharToIndex[t[idx_t]-'a'].begin(),
+                                       lowerCharToIndex[t[idx_t]-'a'].end(), idx_s);
+                                       
+            if(currIdx != lowerCharToIndex[t[idx_t]-'a'].end())
+            dp[idx_t][idx_s] += solve(idx_t+1, *currIdx+1, t, s) + solve(idx_t, *currIdx+1, t, s);
+         
+       } 
+       else{
+            
+            auto currIdx = lower_bound(upperCharToIndex[t[idx_t]-'A'].begin(),
+                                       upperCharToIndex[t[idx_t]-'A'].end(), idx_s);
+
+            if(currIdx != upperCharToIndex[t[idx_t]-'A'].end())
+            dp[idx_t][idx_s] += solve(idx_t+1, *currIdx+1, t, s) + solve(idx_t, *currIdx+1, t, s);
+          
+       } 
+
+        return dp[idx_t][idx_s];
+    }
+    int numDistinct(string s, string t) {
+        int i=0, n = t.size(), m = s.size();
+        lowerCharToIndex.resize(26);
+        upperCharToIndex.resize(26);
+        for(auto& c : s){
+            if(c >= 'a'){
+              lowerCharToIndex[c-'a'].push_back(i);
+            }
+            else{
+              upperCharToIndex[c-'A'].push_back(i);
+            }
+            i++;
+        }
+        dp.resize(n+1, vector<int>(m+1, -1));
+
+        return solve(0, 0, t, s);
+    }
+};
