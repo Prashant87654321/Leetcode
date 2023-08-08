@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> minOperations(string boxes) {
+        vector<int> oneIndexes, res;
+        int n = boxes.size(), i=0;
+        while(i<n){
+            if(boxes[i] == '1') oneIndexes.push_back(i);
+
+            i++;
+        }
+        i = 0;
+        while(i<n){
+            int curr = 0;
+            for(auto& idx : oneIndexes){
+              curr += abs(i - idx);
+            }
+           res.push_back(curr);
+           i++;
+        }
+        return  res;
+    }
+  
+};
