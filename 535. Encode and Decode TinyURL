@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int id = 0;
+    unordered_map<int, string> shortToLong;
+    // Encodes a URL to a shortened URL.
+    string encode(string longUrl) {
+        shortToLong[id] = longUrl;
+        string url = to_string(id);
+        id++;
+        return url;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    string decode(string shortUrl) {
+        int urlId = stoi(shortUrl);
+        return shortToLong[urlId];
+    }
+};
+
+// Your Solution object will be instantiated and called as such:
+// Solution solution;
+// solution.decode(solution.encode(url));
