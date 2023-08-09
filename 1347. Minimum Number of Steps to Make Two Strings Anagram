@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int minSteps(string s, string t) {
+        vector<int> freq_s(26,0), freq_t(26,0);
+        int n = s.size();
+        for(int i=0; i<n; i++){
+          freq_s[s[i]-'a']++;
+          freq_t[t[i]-'a']++;
+        }
+        int res = 0;
+        for(int i=0; i<26; i++){
+            res += abs(freq_s[i] - freq_t[i]); 
+        }
+        return res/2;
+    }
+};
