@@ -1,0 +1,46 @@
+class UnionFind {
+    vector<int> parent;
+    public:
+    UnionFind(int n){
+        for(int i=0; i<n; i++)
+        parent.push_back(i);
+    }
+
+    int find(int x){
+       int root = x;
+       while(root != parent[root])
+       root = parent[root];
+
+       while(root != x){
+           int t = parent[x];
+           parent[x] = root;
+           x = t;
+       }
+       return root;
+    }
+
+    void union_(int x, int y){
+        int xSet = find(x);
+        int ySet = find(y);
+        
+        if(xSet == ySet) return;
+
+        if(xSet < ySet) parent[ySet] = xSet;
+        else parent[xSet] = ySet;
+    }
+};
+class Solution {
+public:
+    string smallestEquivalentString(string s1, string s2, string baseStr) {
+        UnionFind obj(26);
+        for(int i=0; i<s1.size(); i++){
+            obj.union_(s1[i]-'a', s2[i]-'a');
+        }
+
+        for(int i=0; i<baseStr.size(); i++){
+            baseStr[i] = obj.find(baseStr[i] - 'a') + 'a';
+        }
+
+        return baseStr;
+    }
+};
