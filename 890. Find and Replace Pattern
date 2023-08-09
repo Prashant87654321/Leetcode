@@ -1,0 +1,30 @@
+class Solution {
+public:
+    
+    vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
+        int n = pattern.size();
+        vector<string> res; 
+        for(auto& word : words){
+            vector<char> patternToWord(26, '#'), wordToPattern(26, '#');
+            bool f = false;
+            for(int i=0; i<n; i++){
+               if(patternToWord[pattern[i]-'a'] != '#'){
+                   if(word[i] != patternToWord[pattern[i]-'a'] ){
+                       f = true;
+                       break;
+                   }
+               }
+               if(wordToPattern[word[i]-'a'] != '#'){
+                   if(pattern[i] != wordToPattern[word[i] - 'a']){
+                       f = true;
+                       break;
+                   }
+               }
+               patternToWord[pattern[i]-'a'] = word[i];
+               wordToPattern[word[i]-'a'] = pattern[i];
+            }
+            if(!f) res.push_back(word);
+        }
+        return res;
+    }
+};
