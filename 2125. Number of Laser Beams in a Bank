@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int numberOfBeams(vector<string>& bank) {
+        int n = bank.size();
+        vector<int> securityDevicesInRow;
+        for(int i=0; i<n; i++){
+            int curr = 0;
+            for(auto& c : bank[i]){
+                if(c == '1')
+                curr++;
+            }
+            if(curr > 0)
+            securityDevicesInRow.push_back(curr);
+        }
+        if(securityDevicesInRow.size() <= 1) return 0;
+        int res = 0;
+        for(int i=1; i<securityDevicesInRow.size(); i++){
+            res += securityDevicesInRow[i]*securityDevicesInRow[i-1];
+        }
+        return res;
+    }
+};
