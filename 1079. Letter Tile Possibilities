@@ -1,0 +1,23 @@
+class Solution {
+public:
+    unordered_set<string> res;
+    void solve(int mask, string s, string& curr){
+        if(!curr.empty() && res.find(curr) == res.end()){
+            res.insert(curr);
+        }
+        for(int i=0; i<s.size(); i++){
+            int used = mask & (1<<i);
+            if(!used){
+                curr.push_back(s[i]);
+                solve(mask | (1<<i), s, curr);
+                curr.pop_back();
+            }
+        }
+    }
+    int numTilePossibilities(string tiles) {
+        string curr="";
+        solve(0, tiles, curr);
+
+        return res.size();
+    }
+};
