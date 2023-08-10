@@ -1,0 +1,37 @@
+class Solution {
+public:
+    string removeStars(string s) {
+        int n = s.size();
+        int i = 0;
+        stack<int> lastCharIndexes;
+        while(i < n){
+            int j = i;
+            while(i<n && s[i] == '*'){
+               i++;
+            }
+            if(j < i){
+                int t = i-j;
+                j--;
+                while(t){
+                    if(s[j] == '*'){
+                        j = lastCharIndexes.top();
+                        lastCharIndexes.pop();
+                    }
+                    s[j]='*';
+                    j--;
+                    t--;
+                }
+                if(j>=0 && s[j] != '*')
+                lastCharIndexes.push(j);
+            }
+            i++;
+        } 
+        string res="";
+        for(auto& c : s){
+            if(c == '*') continue;
+
+            res += c;
+        }
+        return res;
+    }
+};
