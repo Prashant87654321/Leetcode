@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int minFlips(string target) {
+        
+        int cnt = 0, i=0;
+        while(i < target.size()){
+            cnt++;
+            while(i+1 < target.size() && target[i+1] == target[i]){
+                 i++;
+            }
+            i++;
+        }
+        if(target[0] == '0') cnt--;
+
+        return cnt;
+    }
+};
