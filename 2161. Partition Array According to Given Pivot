@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> pivotArray(vector<int>& nums, int pivot) {
+        vector<vector<int>> lesser, greater;
+        int cnt = 0;
+        for(int i=0; i<nums.size(); i++){
+            if(nums[i] == pivot) cnt++;
+            else if(nums[i] < pivot) lesser.push_back({i, nums[i]});
+            else greater.push_back({i, nums[i]});
+        }
+        sort(lesser.begin(), lesser.end());
+        sort(greater.end(), greater.end());
+        vector<int> res;
+        for(auto& v : lesser){
+            res.push_back(v[1]);
+        }
+        while(cnt--){
+            res.push_back(pivot);
+        }
+        for(auto& v : greater){
+            res.push_back(v[1]);
+        }
+        return res;
+    }
+};
