@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int minSteps(string s, string t) {
+        vector<int> freq(26, 0);
+        int mx = max((int)s.size(), (int)t.size());
+        int i =0;
+        while(i < mx){
+            if(i < s.size()){
+                freq[s[i]-'a']++;
+            }
+            if(i<t.size()){
+                freq[t[i]-'a']--;
+            }
+            i++;
+        }
+        int res = 0;
+        for(auto& cnt : freq){
+            res += abs(cnt);
+        }
+        return res;
+    }
+};
