@@ -1,0 +1,37 @@
+class Solution {
+public:
+    struct ListNode {
+        ListNode* next;
+        int val;
+        
+        ListNode(): next(nullptr), val(0){}
+        ListNode(int value): next(nullptr), val(value){}
+    };
+    
+    vector<int> processQueries(vector<int>& queries, int m) {
+        ListNode* head = new ListNode(1);
+        ListNode* nxt = head;
+        vector<int> res;
+        for(int i=2; i<=m; i++){
+             nxt->next = new ListNode(i);
+             nxt = nxt->next;
+        }
+
+        for(auto& v : queries){
+          int i=0;
+          ListNode *t = head, *prev = head;
+          while( t->val != v){
+            prev = t;
+            t = t->next;
+            i++;
+          }
+          if( t->val != head->val){
+            prev->next = t->next;
+            t->next = head;
+            head = t;
+          }
+          res.push_back(i);
+        }
+        return res;
+    }
+};
