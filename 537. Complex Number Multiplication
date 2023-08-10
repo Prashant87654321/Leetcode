@@ -1,0 +1,54 @@
+class Solution {
+public:
+    string complexNumberMultiply(string num1, string num2) {
+        vector<int> nums(4);
+        int i=0;
+        vector<bool> f(4, false);
+        int j=0;
+        while(i < num1.size()){
+            if(num1[i] == '-'){
+                if(i==0) f[0] = true;
+                else f[1] = true;
+            }
+            int x = 0;
+            bool f1 = false;
+            while(num1[i]-'0' >= 0 && num1[i]-'0' <= 9){
+                x = 10*x + (num1[i]-'0');
+                i++;
+                f1 = 1;
+            }
+            if(f1){
+                nums[j++] = x;
+            }
+            i++;
+        }
+        i=0;
+
+        while(i < num2.size()){
+            if(num2[i] == '-'){
+                if(i==0) f[2] = true;
+                else f[3] = true;
+            }
+            int x = 0;
+            bool f1 = false;
+            while(num2[i]-'0' >= 0 && num2[i]-'0' <= 9){
+                x = 10*x + (num2[i]-'0');
+                i++;
+                f1 = 1;
+            }
+            if(f1){
+                nums[j++] = x;
+            }
+            i++;
+        }
+    for(int i=0; i<4; i++){
+        if(f[i]) nums[i] = -nums[i];
+    }
+    int re = nums[0]*nums[2] - nums[1]*nums[3];
+    int img = nums[1]*nums[2] + nums[0]*nums[3];
+
+    string res = (re < 0 ? "-" : "") + to_string(abs(re)) + "+" + (img < 0 ? "-" : "") + to_string(abs(img)) + "i";
+
+    return res;
+  }
+};
