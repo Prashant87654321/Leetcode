@@ -1,0 +1,31 @@
+class Solution {
+public:
+    string smallestNumber(string pattern) {
+        string res;
+        int n = pattern.size();
+        int smallestUnused = 1;
+        int i=0;
+        while(i < n){
+            int j=i;
+           while( i<n && pattern[i] == 'D'){
+               i++;
+           }
+           if(j != i){
+               int t = i-j+1;
+               string temp = "";
+               while(t--){
+                  temp = to_string(smallestUnused) + temp;
+                  smallestUnused++;
+               }
+               res += temp;
+           }
+           else{
+               res += to_string(smallestUnused);
+               smallestUnused++;
+           }
+           i++;
+        }
+        if(pattern[n-1] == 'I') res += to_string(smallestUnused);
+      return res;
+    }
+};
