@@ -1,0 +1,47 @@
+class Solution {
+public:
+    const long long md = 1e9 + 7;
+    long long binaryExpo(long long a, long long n){
+        long long res = 1;
+
+        while(n){
+            if(n&1) res = (res * a) % md;
+            
+            n /= 2;
+            a = (a * a) % md;
+        }
+        return res;
+    }
+
+    int floor_(vector<int>& nums, long long &i, int val){
+         long long l = i;
+         long long r = nums.size() -1;
+         long long ans = nums.size();
+         while(l <= r){
+            int m = l + (r-l)/2;
+            
+            if(nums[m] <= val){
+                ans = m;
+                l = m + 1;
+            }
+            else{
+                r= m - 1;
+            }
+         }
+         return ans;
+    }
+    int numSubseq(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        long long res = 0;
+        long long i = 0;
+
+        while(i < nums.size() && target - nums[i] >= nums[i]){
+            long long j = floor_(nums, i, target - nums[i]);
+            if( j == nums.size()) j--;
+            if(j >= i)
+            res = (res + binaryExpo(2, j-i)) % md;
+            i++;
+        }
+        return res;
+    }
+};
