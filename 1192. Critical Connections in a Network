@@ -1,0 +1,35 @@
+class Solution {
+    int time = 1;
+public:
+    void dfs(int v ,int parent, vector<vector<int>>& adj, vector<int>& disc_time, vector<int>& low_time,
+      vector<bool>& vis, vector<vector<int>>& res){
+      
+      vis[v] = true;
+      disc_time[v] = time;
+      low_time[v] = time;
+      time++;
+      for(auto& u : adj[v]){
+          if(u == parent) continue;
+
+          if(!vis[u]){
+               dfs(u, v, adj, disc_time, low_time, vis, res);
+               if(low_time[u] > disc_time[v]){
+                   res.push_back({v, u});
+               }
+          }
+          low_time[v] = min(low_time[v], low_time[u]);
+      }
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> adj(n), res;
+        vector<bool> vis(n, false);
+        vector<int> disc_time(n, 0), low_time(n, 0);
+        for(auto& edge : connections){
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        dfs(0, -1, adj, disc_time, low_time, vis, res);
+
+        return res;
+    }
+};
