@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int numberOfWays(string corridor) {
+        vector<vector<int>> pos;
+        long long res = 1;
+        const int md = 1e9 + 7;
+        int n = corridor.size(), i=0, j=0;
+        int seatCnt = 0;
+        while(j < n){
+            int cnt = 0;
+            while(j < n && cnt != 2){
+                 if(corridor[j] == 'S'){
+                     if(cnt == 0) i = j;
+                     seatCnt++;
+                     cnt++;
+                 }
+                 j++;
+            }
+            if(cnt == 2) pos.push_back({i, j-1});
+        }
+        if(seatCnt % 2) return 0;
+        if(pos.size() < 2 ) return pos.size();
+
+        for(int i=1; i<pos.size(); i++){
+             res = ( res * (pos[i][0] - pos[i-1][1]) ) % md;
+        }
+        return  res;
+    }
+};
