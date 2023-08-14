@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int dp[71][71][71];
+    int dy[3] = {-1, 0, 1};
+    const int INF = 1e6;
+    int solve(vector<vector<int>>& grid, int i, int j1, int j2, int& n, int& m){
+       if(j1 < 0 || j1 >= m || j2 < 0 || j2 >= m) return -INF;
+
+       if(i == n) return 0;
+
+       if(dp[i][j1][j2] != -1) return dp[i][j1][j2];
+
+       int mx = 0;
+       for(auto& c1 : dy){
+           for(auto& c2 : dy){
+               if( j1 == j2) mx = max(mx, grid[i][j1] + solve(grid, i+1, j1+c1, j2+c2, n, m));
+               else mx = max(mx, grid[i][j1] + grid[i][j2] + solve(grid, i+1, j1+c1, j2+c2, n, m));
+           }
+       }
+       return dp[i][j1][j2] = mx;
+    }
+    int cherryPickup(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        memset(dp, -1, sizeof(dp));
+        return solve(grid, 0, 0, m-1, n, m);
+    }
+};
