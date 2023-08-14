@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int solve(int i, int j, vector<int>& cuts, vector<vector<int>>& dp){
+
+        if(j - i == 1) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
+        int mn = INT_MAX;
+        for(int k=i+1; k<j; k++){
+            int cur = cuts[j] - cuts[i] + solve(i, k, cuts, dp) + solve(k, j, cuts, dp);
+
+            mn = min(mn, cur);
+        }
+        return dp[i][j] = mn;
+    }
+
+    int minCost(int n, vector<int>& cuts) {
+        vector<int> newCuts;
+        newCuts.push_back(0);
+        for(auto& cut : cuts) newCuts.push_back(cut);
+        newCuts.push_back(n);
+        sort(newCuts.begin(), newCuts.end());
+        int m = newCuts.size();
+        vector<vector<int>> dp(m, vector<int>(m, -1));
+        return solve(0, m-1, newCuts, dp);
+    }
+};
