@@ -1,0 +1,98 @@
+class SegTree{
+    vector<int> st, lazy;
+    /*
+      st -> segment tree
+      lazy -> lazy tree corresponding to st
+    */
+    public:
+    SegTree(int n){
+        st.resize(4*n, 0);
+        lazy.resize(4*n, 0);
+    }
+    /*
+      si -> segment index 
+      ss -> segment start
+      se -> segment end
+      l -> left index of the range to update
+      r -> right index of the range to update
+      val -> new value to assign to the elments in the range [l,r]
+    */
+
+    void rangeUpdate(int si, int ss, int se, int& l, int& r, int& val){
+        if(lazy[si] != 0){
+            st[si] = max(st[si], lazy[si]);
+            if(ss != se){
+                lazy[2*si+1] = max(lazy[2*si+1], st[si]);
+                lazy[2*si+2] = max(lazy[2*si+2], st[si]);
+            }
+            lazy[si] = 0;
+        }
+
+        if(r < ss || se < l) return;
+
+        if(l<=ss && se<=r){
+          st[si] = val;
+          if(ss != se){
+              lazy[2*si+1] = max(lazy[2*si+1], st[si]);
+              lazy[2*si+2] = max(lazy[2*si+2], st[si]);
+          }
+          return;
+        }
+
+        int  mid = ss + (se - ss)/2;
+        rangeUpdate(2*si+1, ss, mid, l, r, val);
+        rangeUpdate(2*si+2, mid+1, se, l, r, val);
+
+        st[si] = max(st[2*si+1], st[2*si+2]);
+    }
+    /*
+      qs -> query range start
+      qe -> query range end
+    */
+    int query(int si, int ss, int se, int& qs, int& qe){
+        if(lazy[si] != 0){
+            st[si] = max(st[si], lazy[si]);
+            if(ss != se){
+                lazy[2*si+1] = max(lazy[2*si+1], st[si]);
+                lazy[2*si+2] = max(lazy[2*si+2], st[si]);
+            }
+            lazy[si] = 0;
+        }
+        if(qe < ss || se < qs) return 0;
+        if(qs<=ss && se<=qe) return st[si];
+
+        int mid = ss + (se -ss)/2;
+        return max(query(2*si+1, ss, mid, qs, qe), query(2*si+2, mid+1, se, qs, qe));
+    }
+};
+class Solution {
+public:
+    vector<int> fallingSquares(vector<vector<int>>& positions) {
+        set<int> xCords;
+        for(auto& pos : positions){
+            xCords.insert(pos[0]);
+            xCords.insert(pos[0] + pos[1] - 1);
+        }
+        unordered_map<int, int> actualToCompressedIdx;
+        int idx = 0;
+        for(auto& xIdx : xCords){
+            actualToCompressedIdx[xIdx] = idx;
+            idx++;
+        }
+        int mxN = xCords.size();
+        SegTree root(mxN);
+        int mx = 0;
+        vector<int> res;
+        for(auto& pos : positions){
+            int x1 = actualToCompressedIdx[pos[0]];
+            int x2 = actualToCompressedIdx[pos[0] + pos[1] -1];
+            int currMx = root.query(0, 0, mxN, x1, x2);
+            currMx += pos[1];
+            root.rangeUpdate(0, 0, mxN, x1, x2, currMx);
+            mx = max(mx, currMx);
+            res.push_back(mx);
+        }
+
+        return res;
+    }
+};
