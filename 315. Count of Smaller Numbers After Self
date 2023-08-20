@@ -1,0 +1,50 @@
+class SegTree{
+   vector<int> st;
+   public:
+   SegTree(int n){
+       st.resize(4*n, 0);
+   }
+
+   void update(int si, int ss, int se, int idx){
+       if(idx < ss || se < idx) return;
+
+       if(ss == se){
+           st[si]++;
+           return;
+       }
+       int m = ss + (se-ss)/2;
+
+       update(2*si+1, ss, m, idx);
+       update(2*si+2, m+1, se, idx);
+
+       st[si] = st[2*si+1] + st[2*si+2];
+   }
+
+   int query(int si, int ss, int se, int qs, int qe){
+       if(qe < ss || se < qs) return 0;
+
+       if(qs<=ss && se<=qe) return st[si];
+
+       int m = ss + (se-ss)/2;
+
+       return query(2*si+1, ss, m, qs, qe) +
+               query(2*si+2, m+1, se, qs,qe);
+   }
+};
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+    vector<int> res;
+    int mxN = 2e4 + 1;
+    int inc = 1e4;
+    SegTree root(mxN);
+    for(int i = nums.size()-1; i>=0; i--){
+       int ans = root.query(0, 0, mxN-1, 0, inc+nums[i]-1);
+       res.push_back(ans);
+       root.update(0, 0, mxN-1, inc+nums[i]);
+    }
+    reverse(res.begin(), res.end());
+
+    return res;
+    }
+};
