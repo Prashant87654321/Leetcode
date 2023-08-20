@@ -1,0 +1,61 @@
+class SegTree{
+   vector<int> st;
+   public:
+   SegTree(int n){
+       st.resize(4*n, 0);
+   }
+
+   void update(int si, int ss, int se, int idx){
+       if(idx < ss || se < idx) return;
+
+       if(ss == se){
+           st[si]++;
+           return;
+       }
+       int m = ss + (se-ss)/2;
+
+       update(2*si+1, ss, m, idx);
+       update(2*si+2, m+1, se, idx);
+
+       st[si] = st[2*si+1] + st[2*si+2];
+   }
+
+   int query(int si, int ss, int se, int qs, int qe){
+       if(qe < ss || se < qs) return 0;
+
+       if(qs<=ss && se<=qe) return st[si];
+
+       int m = ss + (se-ss)/2;
+
+       return query(2*si+1, ss, m, qs, qe) +
+               query(2*si+2, m+1, se, qs,qe);
+   }
+};
+class Solution {
+public:
+    int reversePairs(vector<int>& nums) {
+        set<long long> s;
+        for(auto num : nums){
+            s.insert(1LL*num);  
+            s.insert(1LL*2*num);
+        }
+        unordered_map<long long, int> numToIdx;
+        int idx = 0;
+        for(auto num : s){
+            numToIdx[num] = idx;
+            idx++;
+        }
+        
+    int res = 0;
+    int mxN = 1e5+2;
+    SegTree root(mxN);
+    for(int i = 0; i<nums.size(); i++){
+       int ans = root.query(0, 0, mxN-1, numToIdx[1LL*2*nums[i]] + 1, mxN-1);
+       
+       res += ans;
+       root.update(0, 0, mxN-1, numToIdx[1LL*nums[i]]);
+    }
+
+    return res;
+    }
+};
