@@ -1,0 +1,41 @@
+class Solution {
+public:
+    bool solve(int i, int k, vector<int>& stones, int& n, vector<vector<int>> &dp){
+        if(i == n-1) return true;
+        
+        if(dp[i][k] != -1) return dp[i][k];
+        dp[i][k] = 0;
+        if(k-1 > 0){
+            auto nextIdx = lower_bound(stones.begin(), stones.end(), stones[i]+k-1) - stones.begin();
+
+            if(nextIdx < n && stones[nextIdx] == stones[i] + k-1){
+                if(solve(nextIdx, k-1, stones, n, dp)) return dp[i][k] = true;
+            }
+        }
+
+        {
+            auto nextIdx = lower_bound(stones.begin(), stones.end(), stones[i]+k) - stones.begin();
+
+            if(nextIdx < n && stones[nextIdx] == stones[i] + k){
+                if(solve(nextIdx, k, stones, n, dp)) return dp[i][k] = true;
+            }
+        }
+
+        {
+            auto nextIdx = lower_bound(stones.begin(), stones.end(), stones[i]+k+1) - stones.begin();
+
+            if(nextIdx < n && stones[nextIdx] == stones[i] + k+1){
+                if(solve(nextIdx, k+1, stones, n, dp)) return dp[i][k] = true;
+            }
+        }
+
+        return dp[i][k] = false;
+    }
+    bool canCross(vector<int>& stones) {
+        if(stones[1] != 1) return false;
+        int n = stones.size();
+        vector<vector<int>> dp(n+1, vector<int>(n+1, -1));
+
+        return solve(1, 1, stones, n, dp);
+    }
+};
