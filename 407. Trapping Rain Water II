@@ -1,0 +1,64 @@
+class Solution {
+public:
+    struct Node{
+        int height;
+        int row;
+        int col;
+        Node(int h, int i, int j): height(h), row(i), col(j){}
+    };
+    class MyComp{
+      public:
+       bool operator()(Node &a, Node &b){
+           return a.height >= b.height;
+       }
+    };
+    int dx4[4] = {1, 0, -1, 0}, dy4[4] = {0, 1, 0, -1};
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        int n = heightMap.size();
+        int m = heightMap[0].size();
+        int res = 0;
+        priority_queue<Node, vector<Node>, MyComp> pq;
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        for(int i=0; i<n; i++){
+            if(!vis[i][0]){
+                Node v(heightMap[i][0], i, 0);
+                pq.push(v);
+                vis[i][0] = true;
+            }
+            if(!vis[i][m-1]){
+                Node v(heightMap[i][m-1], i, m-1);
+                pq.push(v);
+                vis[i][m-1] = true;
+            }
+        }
+
+        for(int j=0; j<m; j++){
+            if(!vis[0][j]){
+                Node v(heightMap[0][j], 0, j);
+                pq.push(v);
+                vis[0][j] = true;
+            }
+            if(!vis[n-1][j]){
+                Node v(heightMap[n-1][j], n-1, j);
+                pq.push(v);
+                vis[n-1][j] = true;
+            }
+        }
+        while(!pq.empty()){
+            auto v = pq.top();
+            pq.pop();
+            for(int i=0; i<4; i++){
+                int nr = v.row + dx4[i];
+                int nc = v.col + dy4[i];
+
+                if(nr < 0 || nc < 0 || nr >= n || nc >= m || vis[nr][nc]) continue;
+                
+                res += max(0, v.height - heightMap[nr][nc]);
+                Node u(max(heightMap[nr][nc], v.height), nr, nc);
+                pq.push(u);
+                vis[nr][nc] = true;
+            }
+        }
+        return res;
+    }
+};
