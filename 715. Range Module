@@ -1,0 +1,92 @@
+struct Node{
+   int start;
+   int end;
+   bool tracked;
+   Node* left;
+   Node* right;
+
+   Node(int start, int end, bool tracked, Node* left = nullptr, Node* right = nullptr): 
+       start(start), end(end), tracked(tracked), left(left), right(right) {}
+   ~Node(){
+       delete left;
+       delete right;
+   }
+};
+
+class SegTree{
+   Node* root;
+   public:
+     SegTree(): root(new Node(1, 1e9, false)){}
+     void addRange(int i, int j){
+         update(this->root, i, j, true);
+     }
+     bool queryRange(int i, int j){
+         return query(this->root, i, j);
+     }
+     void removeRange(int i, int j){
+         update(this->root, i, j, false);
+     }
+     void update(Node* root, int i, int j, bool tracked){
+         if(j < root->start || root->end < i) return;
+         if(root->start == i && root->end == j){
+             root->tracked = tracked;
+             root->left = nullptr;
+             root->right = nullptr;
+             return;
+         }
+         int mid = root->start + (root->end - root->start)/2;
+         if(root->left == nullptr){
+             root->left = new Node(root->start, mid, root->tracked);
+             root->right = new Node(mid+1, root->end, root->tracked);
+         }
+         if(j<=mid){
+             update(root->left, i, j, tracked);
+         }
+         else if(mid < i){
+             update(root->right , i, j, tracked);
+         }
+        else{
+         update(root->left, i, mid, tracked);
+         update(root->right, mid+1, j, tracked);
+        }
+         root->tracked = root->left->tracked && root->right->tracked;
+     }
+
+     bool query(Node* root, int i, int j){
+         
+         if(j < root->start || root->end < i) return true;
+         if(root->left == nullptr) return root->tracked;
+         if(root->start == i && root->end == j) return root->tracked;
+
+         int mid = root->start + (root->end - root->start)/2;
+         if(j<= mid) return query(root->left, i, j);
+         if(mid < i) return query(root->right, i, j);
+         return query(root->left, i, mid) && query(root->right, mid+1, j);
+     }
+};
+class RangeModule {
+    SegTree tree;
+public:
+    RangeModule() {  
+    }
+    
+    void addRange(int left, int right) {
+        tree.addRange(left, right-1);
+    }
+    
+    bool queryRange(int left, int right) {
+        return tree.queryRange(left, right-1);
+    }
+    
+    void removeRange(int left, int right) {
+        tree.removeRange(left, right-1);
+    }
+};
+
+/**
+ * Your RangeModule object will be instantiated and called as such:
+ * RangeModule* obj = new RangeModule();
+ * obj->addRange(left,right);
+ * bool param_2 = obj->queryRange(left,right);
+ * obj->removeRange(left,right);
+ */
