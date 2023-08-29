@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<bool> vis;
+    const int INF = 1e6;
+    int dfs(int v, vector<vector<int>> &adj, vector<int> &nums, int target){
+        int currSum = nums[v];
+        vis[v] = true;
+        
+        for(auto u : adj[v]){
+            if(vis[u]) continue;
+
+            currSum += dfs(u, adj, nums, target);
+
+            if(currSum > target) return INF;
+        }
+
+        if(currSum == target) return 0;
+
+        return currSum;
+    }
+    int componentValue(vector<int>& nums, vector<vector<int>>& edges) {
+        int n = nums.size();
+       vector<vector<int>> adj(n);
+       vis.resize(n);
+       for(auto &edge : edges){
+           adj[edge[0]].push_back(edge[1]);
+           adj[edge[1]].push_back(edge[0]);
+       }
+       int totSum = accumulate(nums.begin(), nums.end(), 0);
+       for(int i=n; i>1; i--){
+           if(totSum % i != 0) continue;
+           vis.assign(n, false);
+           if(dfs(0, adj, nums, totSum/i) == 0) return i-1;
+       }
+       return 0;
+    }
+};
