@@ -1,0 +1,31 @@
+class MyCalendarThree {
+public:
+    unordered_map<int, int> segTree;
+    unordered_map<int, int> lazy;
+    MyCalendarThree() {}    
+    
+    void updateTree(int ss, int se, int &us, int &ue, int si){
+        if(ue < ss || se < us) return;
+        if(us<=ss && se<=ue){
+            segTree[si]++;
+            lazy[si]++;
+        }
+        else{
+            int m = ss + (se-ss)/2;
+            updateTree(ss, m, us, ue, 2*si+1);
+            updateTree(m+1, se, us, ue, 2*si+2);
+            segTree[si] = lazy[si] + max(segTree[2*si+1], segTree[2*si+2]);
+        }
+    }
+    int book(int startTime, int endTime) {
+        endTime--;
+        updateTree(0, (int)1e9, startTime, endTime, 0);
+        return segTree[0];
+    }
+};
+
+/**
+ * Your MyCalendarThree object will be instantiated and called as such:
+ * MyCalendarThree* obj = new MyCalendarThree();
+ * int param_1 = obj->book(startTime,endTime);
+ */
