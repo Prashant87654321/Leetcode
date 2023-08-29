@@ -1,0 +1,73 @@
+class SegTree{
+    vector<pair<int, int>> st;
+    public:
+    SegTree(int n){
+        st.resize(4*n);
+    }
+    void merge(pair<int, int> &res,  pair<int, int> &l, pair<int, int> &r){
+        if(l.first == r.first){
+            res =  make_pair(l.first, l.second + r.second);
+        }
+        else if(l.second >= r.second){
+            res =  make_pair(l.first, l.second - r.second);
+        }
+        else{
+            res = make_pair(r.first, r.second - l.second);
+        }
+    }
+    void buildTree(int ss, int se, int si, vector<int> &arr){
+
+        if(ss == se){
+            st[si] = make_pair(arr[ss], 1);
+            return;
+        }
+        int m = ss + (se-ss)/2;
+        buildTree(ss, m, 2*si+1, arr);
+        buildTree(m+1, se, 2*si+2, arr);
+
+        merge(st[si], st[2*si+1], st[2*si+2]);
+    }
+
+    pair<int, int> findMajority(int ss, int se, int &qs, int &qe, int si){
+        if(qe < ss || se < qs) return {0, 0};
+        if(qs<=ss && se<=qe) return st[si];
+
+        int m = ss + (se-ss)/2;
+        auto l = findMajority(ss, m, qs, qe, 2*si+1);
+        auto r = findMajority(m+1, se, qs, qe, 2*si+2);
+        pair<int, int> res;
+        merge(res, l, r);
+        return res; 
+    }
+};
+
+
+class MajorityChecker {
+   SegTree root;
+    int n;
+    unordered_map<int, vector<int>> elementToPos;
+public:
+
+    MajorityChecker(vector<int>& arr): root(arr.size()), n(arr.size()){
+        root.buildTree(0, n-1, 0, arr);
+        for(int i=0; i<arr.size(); i++){
+            elementToPos[arr[i]].push_back(i);
+        }
+    }
+    
+    int query(int left, int right, int threshold) {
+        pair<int, int> t = root.findMajority(0, n-1, left, right, 0);
+        if(t.first == 0) return -1;
+        int l = lower_bound(elementToPos[t.first].begin(), elementToPos[t.first].end(), left) - elementToPos[t.first].begin();
+        int r = upper_bound(elementToPos[t.first].begin(), elementToPos[t.first].end(), right) - elementToPos[t.first].begin();
+        
+        if(r-l >= threshold) return t.first;
+        return -1;
+    }
+};
+
+/**
+ * Your MajorityChecker object will be instantiated and called as such:
+ * MajorityChecker* obj = new MajorityChecker(arr);
+ * int param_1 = obj->query(left,right,threshold);
+ */
