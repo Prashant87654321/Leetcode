@@ -1,0 +1,30 @@
+class MyCalendarTwo {
+    map<int, int> mp;
+public:
+    MyCalendarTwo() {
+        
+    }
+    
+    bool book(int start, int end) {
+        int cur = 0;
+        mp[start]++;
+        mp[end]--;
+        for(auto &[key, val] : mp){
+            cur += val;
+            if(start <= key && key < end){
+                if(cur > 2) {
+                  mp[start]--;
+                  mp[end]++;
+                  return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo* obj = new MyCalendarTwo();
+ * bool param_1 = obj->book(start,end);
+ */
