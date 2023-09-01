@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int res = 0;
+        int n = ratings.size();
+        vector<int> candies(n, 1);
+        vector<vector<int>> data;
+        for(int i=0; i<n; i++){
+           data.push_back({ratings[i], i});
+        }
+        sort(data.begin(), data.end());
+        for(int i=0; i<n; i++){
+            
+            if(data[i][1]-1 >= 0 && ratings[data[i][1]] > ratings[data[i][1]-1]){
+                candies[data[i][1]] = max(candies[data[i][1]], candies[data[i][1]-1] + 1);
+            }
+            if(data[i][1] + 1 <n && ratings[data[i][1]] > ratings[data[i][1]+1]){
+                candies[data[i][1]] = max(candies[data[i][1]], candies[data[i][1]+1] +1);
+            }
+        }
+
+        for(int x : candies) res += x;
+
+        return res;
+    }
+};
