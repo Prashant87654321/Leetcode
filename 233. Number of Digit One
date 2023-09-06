@@ -1,0 +1,37 @@
+class Solution {
+    vector<int> nums;
+public:
+    int dp[10][10][2];
+    int solve(int pos, int oneCnt, int flag){
+        if(pos == nums.size()) return oneCnt;
+        
+        if(dp[pos][oneCnt][flag] != -1) return dp[pos][oneCnt][flag];
+
+        int lmt;
+        if(flag) lmt = 9;
+        else lmt = nums[pos];
+
+        int res = 0;
+        for(int digit = 0; digit <= lmt; digit++){
+            int currFlag = flag;
+            int currOneCnt = oneCnt;
+
+            if(digit < lmt) currFlag = 1;
+
+            if(digit == 1) currOneCnt++;
+
+            res += solve(pos+1, currOneCnt, currFlag);
+        }
+
+        return dp[pos][oneCnt][flag] = res;
+    }
+    int countDigitOne(int n) {
+        while(n){
+            nums.push_back(n%10);
+            n /= 10;
+        }
+        memset(dp, -1, sizeof(dp));
+        reverse(nums.begin(), nums.end());
+        return solve(0, 0, 0);
+    }
+};
