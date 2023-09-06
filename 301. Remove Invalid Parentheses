@@ -1,0 +1,47 @@
+class Solution {
+public:
+    unordered_set<string> uniq;
+    bool isValid(string &s, vector<string> &res){
+        int cnt = 0;
+        for(auto & ch : s){
+            if(ch == '(')cnt++;
+            else if(ch == ')') cnt--;
+            if(cnt < 0) return false;
+        }
+        if(cnt == 0){
+            if(uniq.find(s) == uniq.end()){
+                res.push_back(s);
+                uniq.insert(s);
+            }
+            return true;
+        }
+        return false;
+    }
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> res;
+        queue<string> q;
+        q.push(s);
+        bool flag = false;
+        unordered_set<string> vis;
+        vis.insert(s);
+        while(!flag && !q.empty()){
+            int qs = q.size();
+            for(int i=0; i<qs; i++){
+                string str = q.front(); q.pop();
+                
+                if(isValid(str, res)){
+                    flag = true;
+                }
+                for(int j=0; j<str.size(); j++){
+                    if(str[j] == '(' || str[j] == ')'){
+                        string tmp = str.substr(0,j) + str.substr(j+1);
+                        if(vis.find(tmp) != vis.end()) continue;
+                        q.push(tmp);
+                        vis.insert(tmp);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
