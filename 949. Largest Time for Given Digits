@@ -1,0 +1,33 @@
+class Solution {
+public:
+    bool isValid(string &s){
+       if(s[0]-'0' >2) return false;
+       if(s[0]-'0' == 2){
+           if(s[1]-'0' > 3) return false;
+
+           if(s[3]-'0' > 5) return false;
+       }
+       else{
+           if(s[3]-'0' > 5) return false;
+       }
+       return true;
+    }
+    string largestTimeFromDigits(vector<int>& arr) {
+        vector<string> res;
+        for(int i=0; i<4; i++){
+           for(int j=0; j<4; j++){
+               for(int k=0; k<4; k++){
+                   for(int l=0; l<4; l++){
+                       if(i==j || i==k || i==l || j==k || j==l || k==l) continue;
+                       string t = "";
+                       t = to_string(arr[i]) + to_string(arr[j]) + ":" + to_string(arr[k]) + to_string(arr[l]);
+                       if(isValid(t)) res.push_back(t);
+                   }
+               }
+           }
+        }
+        if(res.empty()) return "";
+        sort(res.begin(), res.end(), greater());
+        return *res.begin();
+    }
+};
