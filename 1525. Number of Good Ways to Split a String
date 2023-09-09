@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int numSplits(string s) {
+        unordered_map<int , int> freqLeft, freqRight;
+        for(auto &c : s)freqRight[c-'a']++;
+        int ans = 0;
+        for(auto &c : s){
+            freqLeft[c-'a']++;
+            freqRight[c-'a']--;
+             if(freqRight[c-'a'] == 0) freqRight.erase(c-'a');
+
+             if(freqLeft.size() == freqRight.size()) ans++;
+        }
+        return ans;
+    }
+};
