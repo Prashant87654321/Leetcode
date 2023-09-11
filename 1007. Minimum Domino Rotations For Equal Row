@@ -1,0 +1,57 @@
+class Solution {
+public:
+    int minDominoRotations(vector<int>& tops, vector<int>& bottoms) {
+        unordered_map<int, int> cnt;
+        int x = -1, y = -1;
+        for(int i=0; i<tops.size(); i++){
+            cnt[tops[i]]++;
+            cnt[bottoms[i]]++;
+            if(cnt[tops[i]] >= tops.size()){
+                x = tops[i];
+            }
+            if(cnt[bottoms[i]] >= tops.size()){
+               y = bottoms[i];
+            }
+        }
+        if(x == -1 && y == -1) return -1;
+        
+        int res = INT_MAX;
+        if(x == y){
+           int swaps = 0;
+            bool f = 0;
+           for(int i=0; i<tops.size(); i++){
+               if(tops[i] == x) continue;
+               else if(bottoms[i] != x){
+                   f= 1;
+                   break;
+               }
+               else swaps++;
+           }
+           if(!f) res = min(res, swaps);
+            f = 0;
+           swaps = 0;
+           for(int i=0; i<bottoms.size(); i++){
+               if(bottoms[i] == y) continue;
+               else if(tops[i] != y){
+                  f = 1;
+                  break;
+               }
+               else swaps++;
+           }
+           if(!f) res = min(res, swaps);
+
+           if(res == INT_MAX) return -1;
+        }
+        else {
+            int swaps = 0;
+            for(int i=0; i<tops.size(); i++){
+                  if(tops[i] == bottoms[i]) return -1;
+                  if(tops[i] != x) swaps++; 
+            }
+            swaps = min(swaps, (int)tops.size()-swaps);
+
+            res = min(res, swaps);
+        }
+        return res;
+    }
+};
