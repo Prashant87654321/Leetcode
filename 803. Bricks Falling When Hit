@@ -1,0 +1,102 @@
+class UnionFind{
+  vector<int> parent, sz;
+  public:
+    UnionFind(int n){
+        for(int i=0; i<n; i++){
+            parent.push_back(i);
+        }
+        sz.resize(n, 1);
+        sz[0] = 0;
+    }
+
+    int find(int x){
+        int root = x;
+        while(root != parent[root]){
+            root = parent[root];
+        }
+
+        while(x != root){
+            int t = parent[x];
+            parent[x] = root;
+            x = t;
+        }
+        return root;
+    }
+
+    void union_(int x, int y){
+        int xSet = find(x);
+        int ySet = find(y);
+
+        if(xSet == ySet) return;
+
+        if(xSet <= ySet){
+             parent[ySet] = xSet;
+             sz[xSet] += sz[ySet];
+        }
+        else{
+            parent[xSet] = ySet;
+            sz[ySet] += sz[xSet];
+        }
+    }
+
+    int getSize(int x){
+        return sz[find(x)];
+    }
+};
+
+class Solution {
+public:
+    vector<int> hitBricks(vector<vector<int>>& grid, vector<vector<int>>& hits) {
+        int n = grid.size(), m = grid[0].size();
+        int dx4[] = {1, 0, -1, 0}, dy4[] = {0, 1, 0, -1};
+
+        UnionFind obj(n*m +1);
+
+        for(auto hit : hits){
+            if(grid[hit[0]][hit[1]] == 1) grid[hit[0]][hit[1]] = -1;
+        }
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j] == 1){
+                    if(i == 0){
+                        obj.union_(0, i*m + j +1);
+                    }
+                    for(int k=0; k<4; k++){
+                        int nx = i + dx4[k], ny = j + dy4[k];
+
+                        if(nx < 0 || ny < 0 || nx >= n || ny >= m || grid[nx][ny] != 1) continue;
+
+                        obj.union_(i*m + j + 1, nx*m + ny + 1);
+                    }
+                }
+            }
+        }
+        int hits_sz = hits.size();
+        vector<int> res(hits_sz, 0);
+
+        for(int i= hits_sz-1; i>=0; i--){
+            if(grid[hits[i][0]][hits[i][1]] != -1) continue;
+            
+            int no_of_stableBricks = obj.getSize(0);
+            cout<<no_of_stableBricks<<" ";
+            grid[hits[i][0]][hits[i][1]] = 1;
+            if(hits[i][0] == 0){
+                obj.union_(0, hits[i][0]*m + hits[i][1] + 1);
+            }
+            for(int k=0; k<4; k++){
+                int nx = hits[i][0] + dx4[k], ny = hits[i][1] + dy4[k];
+
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m || grid[nx][ny] != 1) continue;
+
+                obj.union_(hits[i][0]*m + hits[i][1] + 1, nx*m + ny + 1);
+            }
+
+            int new_no_of_stableBricks = obj.getSize(0);
+            cout<<new_no_of_stableBricks<<" ";
+            res[i] = max(0, new_no_of_stableBricks - no_of_stableBricks - 1);
+        }
+
+        return res;
+    }
+};
