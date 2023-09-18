@@ -1,0 +1,36 @@
+class Solution {
+public:
+    class MyComp{
+        public:
+        bool operator()(vector<int> &v1, vector<int> &v2){
+            return v1[0] >= v2[0];
+        }
+    };
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        
+        int n = nums.size();
+        vector<vector<int>:: iterator> next(n);
+        priority_queue< vector<int>, vector<vector<int>>, MyComp> minHeap;
+        int mx = INT_MIN;
+        for(int i=0; i<n; i++){
+            next[i] = nums[i].begin();
+            minHeap.push({*next[i], i});
+            mx = max(mx, *next[i]);
+        }
+        
+        vector<int> res = {minHeap.top()[0], mx};
+        
+        while(true){
+            vector<int> v = minHeap.top();
+            minHeap.pop();
+            next[v[1]]++;
+            if(next[v[1]] == nums[v[1]].end()) break;
+            minHeap.push({*next[v[1]], v[1]});
+            mx = max(mx, *next[v[1]]);
+            if(mx - minHeap.top()[0] < res[1] - res[0]){
+                res = {minHeap.top()[0], mx};
+            }
+        }
+        return res;
+    }
+};
