@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int countDifferentSubsequenceGCDs(vector<int>& nums) {
+        
+        int mx = *max_element(nums.begin(), nums.end());
+        vector<int> GCD(mx+1, 0);
+
+        for(int i=0; i<nums.size(); i++){
+            for(int j = 1; j*j <= nums[i]; j++){
+                if(nums[i] % j == 0){
+                    int f1 = j, f2 = nums[i] / j;
+
+                    GCD[f1] = __gcd(GCD[f1], nums[i]);
+                    GCD[f2] = __gcd(GCD[f2], nums[i]);
+                }
+            }
+        }
+        int res = 0;
+        for(int i=1; i<=mx; i++){
+            if(GCD[i] == i) res++;
+        }
+
+        return res;
+    }
+};
