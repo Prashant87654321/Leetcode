@@ -1,0 +1,60 @@
+class Solution {
+public:
+    void dfs(int i, int j, vector<vector<int>> &grid, vector<vector<bool>> &vis, int &res){
+        if(i < 0 || j < 0 || i>= grid.size() || j >= grid[0].size() || grid[i][j] == 0) return;
+        if(vis[i][j]) return ;
+
+        vis[i][j] = true;
+        res++;
+        dfs(i+1, j, grid, vis, res);
+        dfs(i-1, j, grid, vis, res);
+        dfs(i, j+1, grid, vis, res);
+        dfs(i, j-1, grid, vis, res);
+
+        //vis[i][j] = false;
+    }
+    int minDays(vector<vector<int>>& grid) {
+        stack<pair<int, int>> st;
+        int n = grid.size(), m = grid[0].size();
+        pair<int, int> start1, start2 = make_pair(-1, -1);
+        for(int i=0; i< n; i++){
+            for(int j=0; j< m; j++){
+                if(grid[i][j] == 1){
+                    st.push({i, j});
+                    if(start2.first == -1){
+                        start2 = {i, j};
+                    }
+                }
+            }
+        }
+        if(st.empty()) return 0;
+        start1 = st.top();
+        int total_land = st.size();
+        if(total_land <= 1) return total_land;
+        int res = 0;
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        dfs(start1.first, start1.second, grid, vis, res);
+        cout<<total_land<<'\n';
+        cout<<res;
+        if(res != total_land) return 0;
+
+        while(!st.empty()){
+            vis.assign(n, vector<bool>(m, false));
+            auto t = st.top(); 
+            st.pop();
+            grid[t.first][t.second] = 0;
+            res = 0;
+            if(st.empty()){
+                dfs(start1.first, start1.second, grid, vis, res);
+            }
+            else{
+                dfs(start2.first, start2.second, grid, vis, res);
+            }
+
+            if(res != total_land -1 ) return 1;
+            grid[t.first][t.second] = 1;
+        }
+
+        return 2;
+    }
+};
