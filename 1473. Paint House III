@@ -1,0 +1,41 @@
+class Solution {
+    const int INF = 1e8;
+int dp[101][101][22];
+int solve(int i, int rem_Neighbourhoods, int prev_color, vector<int> &houses, vector<vector<int>> &cost){
+    if(i == houses.size() && rem_Neighbourhoods == 0) return 0;
+    if(i >= houses.size() || rem_Neighbourhoods < 0) return INF;
+    
+    if(dp[i][rem_Neighbourhoods][prev_color+1] != -1) return dp[i][rem_Neighbourhoods][prev_color+1];
+    dp[i][rem_Neighbourhoods][prev_color+1] = INF;
+    if(houses[i] != 0){
+        if(houses[i] == prev_color){
+          dp[i][rem_Neighbourhoods][prev_color+1] = solve(i+1, rem_Neighbourhoods, houses[i], houses, cost);
+        }
+        else{
+          dp[i][rem_Neighbourhoods][prev_color+1] =  solve(i+1, rem_Neighbourhoods-1, houses[i], houses, cost);
+        }
+    }
+    else{
+        int ans = INF;
+        for(int j=0; j<cost[i].size(); j++){
+           if(prev_color == j+1){
+               ans = min(ans, cost[i][j] + solve(i+1, rem_Neighbourhoods, j+1, houses, cost));
+           }
+           else{
+               ans = min(ans, cost[i][j] + solve(i+1, rem_Neighbourhoods-1, j+1, houses, cost));
+           }
+        }
+        dp[i][rem_Neighbourhoods][prev_color+1] = ans;
+    }
+
+    return dp[i][rem_Neighbourhoods][prev_color+1];
+}
+public:
+    int minCost(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
+        memset(dp, -1, sizeof(dp));
+
+        int res = solve(0, target, -1, houses, cost);
+
+        return (res != INF ? res : -1);
+    }
+};
