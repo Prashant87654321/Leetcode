@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int maxSubarrays(vector<int>& nums) {
+        int minScore = INT_MAX;
+        int n = nums.size();
+        for(int i=0; i<n; i++){
+            minScore &= nums[i];
+        }
+        int res = 0;
+        if(minScore != 0) return 1;
+        int curr = INT_MAX;
+        for(int i=0; i<n; i++){
+           curr &= nums[i];
+           if(curr == minScore){
+              res++;
+              curr = INT_MAX;
+           }
+        }
+        return res;
+    }
+};
