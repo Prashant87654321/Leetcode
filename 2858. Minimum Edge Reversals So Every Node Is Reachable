@@ -1,0 +1,50 @@
+class Solution {
+public:
+    void dfs(int v, vector<vector<int>> &adj, vector<bool> &vis, unordered_set<string> &originalEdges, int &cnt){
+         vis[v] = true;
+
+         for(auto u : adj[v]){
+             if(vis[u]) continue;
+             string t = to_string(v) + "_" + to_string(u);
+             if(originalEdges.find(t) == originalEdges.end()) cnt++;
+
+             dfs(u, adj, vis, originalEdges, cnt);
+         }
+    }
+    vector<int> minEdgeReversals(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(n);
+        unordered_set<string> originalEdges;
+        for(auto &edge : edges){
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+            string t = to_string(edge[0]) + "_" + to_string(edge[1]);
+            originalEdges.insert(t);
+        }
+        vector<bool> vis(n, false);
+        vector<int> res(n, 0);
+        int cnt = 0;
+        dfs(0, adj, vis, originalEdges, cnt);
+        res[0] = cnt;
+        queue<int> q;
+        q.push(0);
+        vis.assign(n, false);
+        vis[0] = true;
+
+        while(!q.empty()){
+            int v = q.front(); q.pop();
+
+            for(auto u : adj[v]){
+                if(vis[u]) continue;
+                string t = to_string(u) + "_" + to_string(v);
+                if(originalEdges.find(t) != originalEdges.end()){
+                    res[u] = res[v] - 1;
+                }
+                else res[u] = res[v] + 1;
+
+                q.push(u);
+                vis[u] = true;
+            }
+        }
+        return res;
+    }
+};
