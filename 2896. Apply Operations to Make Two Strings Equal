@@ -1,0 +1,29 @@
+class Solution {
+    float solve(int i, vector<int> &diffIndexes, int &x, vector<float> &dp){
+        if(i >= diffIndexes.size()) return 0;
+        if(i == diffIndexes.size()-1) return x/2.0;
+
+        if(dp[i]  >= 0.0) return dp[i];
+        dp[i] = fminf(solve(i+1, diffIndexes, x, dp) + x/2.0,
+                   solve(i+2, diffIndexes, x, dp) + float(diffIndexes[i+1] - diffIndexes[i]));
+        
+        return dp[i];
+    }
+public:
+    int minOperations(string s1, string s2, int x) {
+        int n = s1.size();
+        vector<int> diffIndexes;
+        for(int i=0; i<n; i++){
+            if(s1[i] != s2[i]){
+                diffIndexes.push_back(i);
+            } 
+        }
+        int m = diffIndexes.size();
+        if(m % 2 == 1) return -1;
+        vector<float> dp(m, -1.0);
+        float res = solve(0, diffIndexes, x, dp);
+        res = (int) res;
+
+        return res;
+    }
+};
