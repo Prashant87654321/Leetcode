@@ -1,0 +1,29 @@
+class Solution {
+    int colors[3] = {1, 2, 3};
+    int md = 1e9+7;
+    int dp[1000][1024];
+    int solve(int i,int j, int &m, int &n, int prevColors, int currColors){
+        if(i == m) return solve(0, j+1, m, n, currColors, 0);
+        if(j == n) return 1;
+        if(i==0 && dp[j][prevColors] != -1) return dp[j][prevColors];
+
+        int aboveColor =  i==0 ? 0 : ( currColors >> (2*(i-1) ) )  & (0b11) ;
+        int leftColor =  (prevColors >> (2*i)) & (0b11);
+        int ans = 0;
+        for(auto color : colors){
+            if(color == aboveColor || color == leftColor) continue;
+            
+            ans += solve(i+1, j, m, n, prevColors, currColors | (color << (2*i)) );
+            ans %= md;
+        }
+        if(i == 0)
+        dp[j][prevColors] = ans;
+
+        return ans;
+    }
+public:
+    int colorTheGrid(int m, int n) {
+        memset(dp, -1, sizeof(dp));
+        return solve(0, 0, m, n, 0, 0);
+    }
+};
