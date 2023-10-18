@@ -1,0 +1,32 @@
+class Solution {
+    int colors[3] = {1, 2, 3};
+    int md = 1e9+7;
+    int dp[5000][4][4][4];
+    int solve(int i, int c1, int c2, int c3, int &n){
+        if(i == n) return 1;
+        if(dp[i][c1][c2][c3] != -1) return dp[i][c1][c2][c3];
+        int ans = 0;
+        for(auto color1 : colors){
+            if(color1 == c1) continue;
+
+            for(auto color2 : colors){
+                if(color2 == c2 || color2 == color1) continue;
+
+                for(auto color3 : colors){
+                    if(color3 == c3 || color3 == color2) continue;
+                    
+                    ans += solve(i+1, color1, color2, color3, n);
+                    ans %= md;
+               
+                }
+            }
+        }
+        return dp[i][c1][c2][c3] = ans;
+    }
+public:
+    int numOfWays(int n) {
+        memset(dp, -1, sizeof(dp));
+
+        return solve(0, 0, 0, 0, n);
+    }
+};
