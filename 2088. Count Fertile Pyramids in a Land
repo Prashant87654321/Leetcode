@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int countPyramids(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>> dp(n, vector<int>(m, 0)), dp_inv(n, vector<int>(m, 0));
+        int res = 0;
+        for(int i=n-1; i>=0; i--){
+            for(int j=m-1; j>=0; j--){
+                if(i == n-1 || j==0 || j == m-1){
+                    dp[i][j] = grid[i][j];
+                }
+                else{
+                    if(grid[i][j]){
+                        dp[i][j] = 1 +  min(dp[i+1][j-1], min(dp[i+1][j], dp[i+1][j+1]));
+                        res += dp[i][j] -1;
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(i==0 || j==0 || j==m-1){
+                    dp_inv[i][j] = grid[i][j];
+                }
+                else if(grid[i][j]){
+                    dp_inv[i][j] = 1 + min(dp_inv[i-1][j-1], min(dp_inv[i-1][j], dp_inv[i-1][j+1]));
+                    res += dp_inv[i][j]-1;
+                }
+            }
+        }
+        return res;
+    }
+};
