@@ -1,0 +1,61 @@
+class Solution {
+    vector<vector<int>> nodeToFreq;
+    void dfs(int v, vector<vector<int>> &adj, string &colors, vector<bool> &vis){
+        vis[v] = true;
+        for(int u : adj[v]){ 
+            if(!vis[u]){
+                dfs(u, adj, colors, vis);
+            }
+            for(int i=0; i<26; i++){
+                nodeToFreq[v][i] = max(nodeToFreq[v][i], nodeToFreq[u][i]);
+            }
+        }
+        nodeToFreq[v][colors[v]-'a']++;
+    }
+public:
+    int largestPathValue(string colors, vector<vector<int>>& edges) {
+        int n = colors.size();
+        vector<vector<int>> adj(n);
+        vector<int> indegree1(n), indegree2(n);
+        for(vector<int> edge : edges){
+            adj[edge[0]].emplace_back(edge[1]);
+            indegree1[edge[1]]++;
+            indegree2[edge[1]]++;
+        }
+        queue<int> q;
+        int cnt=0;
+        for(int i=0; i<n; i++){
+            if(indegree1[i] == 0){
+                q.push(i);
+                cnt++;
+            }
+        }
+
+        while(!q.empty() && cnt < n){
+            int v = q.front();
+            q.pop();
+            for(int u : adj[v]){
+                indegree1[u]--;
+                if(indegree1[u] == 0){
+                    q.push(u);
+                    cnt++;
+                }
+            }
+        }
+        if(cnt != n) return -1;
+
+        nodeToFreq = vector<vector<int>>(n, vector<int>(26, 0));
+        vector<bool> vis(n, false);
+        int res = 0;
+        for(int i=0; i<n; i++){
+            if(indegree2[i] == 0){
+                dfs(i, adj, colors, vis);
+                for(int j=0; j<26; j++){
+                    res = max(res, nodeToFreq[i][j]);
+                }
+                cout<<res<<" ";
+            }
+        }
+        return res; 
+    }
+};
