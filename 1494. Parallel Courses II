@@ -1,0 +1,50 @@
+class Solution {
+    int dp[1<<15];
+    int solve(int taken, vector<vector<int>> &adj, int k, int &n){
+        if(taken == (1<<n)-1){
+            return 0;
+        }
+        if(dp[taken] != -1) return dp[taken];
+        vector<int> indegree(n);
+
+        for(int i=0; i<n; i++){
+            if(taken & (1<<i)){
+                continue;
+            }
+
+            for(int course : adj[i]){
+                indegree[course]++;
+            }
+        }
+        int available = 0;
+        for(int i=0; i<n; i++){
+            if(indegree[i]== 0 && !(taken & (1<<i))){
+                available |= (1<<i);
+            }
+        }
+
+        int cnt = __builtin_popcount(available);
+        int res = n+1;
+        if(cnt > k){
+            for(int j = available; j>0; j = (j-1) & available){
+                 if(__builtin_popcount(j) == k){
+                     res = min(res, 1 + solve(taken | j, adj, k, n));
+                 }
+            }
+        }
+        else{
+            res = min(res, 1 + solve(taken | available, adj, k, n));
+        }
+
+        return dp[taken] = res;
+    }
+public:
+    int minNumberOfSemesters(int n, vector<vector<int>>& relations, int k) {
+        memset(dp, -1, sizeof(dp));
+        vector<vector<int>> adj(n);
+        for(vector<int> e : relations){
+             adj[e[0]-1].emplace_back(e[1]-1);
+        }
+        return solve(0, adj, k, n);
+    }
+};
