@@ -1,0 +1,45 @@
+class Solution {
+    void dfs(int v, int parent, vector<vector<int>> &adj, vector<vector<int>> &coprimes, vector<vector<int>> &latestDepth, vector<int> &res, int depth, vector<int> &nums){
+        
+        int ans = -1;
+        for(int num : coprimes[nums[v]]){
+             if(latestDepth[num][0] > ans){
+                 ans = latestDepth[num][0];
+                 res[v] = latestDepth[num][1];
+             }
+        }
+        
+        vector<int> prevLatest = latestDepth[nums[v]];
+        latestDepth[nums[v]] = {depth, v};
+        for(int u : adj[v]){
+            if(u != parent) {
+                dfs(u, v, adj, coprimes, latestDepth, res, depth+1, nums);
+            }
+        }
+        latestDepth[nums[v]] = prevLatest;
+    }
+public:
+    vector<int> getCoprimes(vector<int>& nums, vector<vector<int>>& edges) {
+        int n = nums.size();
+
+        vector<vector<int>> adj(n);
+        for(vector<int> e : edges){
+            adj[e[0]].emplace_back(e[1]);
+            adj[e[1]].emplace_back(e[0]);
+        }
+        
+        vector<vector<int>> coprimes(51);
+        for(int i=1; i<=50; i++){
+            for(int j=1; j<=50; j++){
+                if(__gcd(i, j) == 1){
+                    coprimes[i].emplace_back(j);
+                }
+            }
+        }
+     
+        vector<vector<int>> latestDepth(51, vector<int>(2, -1));
+        vector<int> res(n, -1);
+        dfs(0, -1, adj, coprimes, latestDepth, res, 0, nums);
+        return res;
+    }
+};
